@@ -1,4 +1,4 @@
-package com.iroff.support_lab_backend;
+package com.iroff.supportlab;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

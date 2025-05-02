@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: iroff-mysql-local
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: iroff_mysql_local
+      MYSQL_USER: iroff_user
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  db_data:

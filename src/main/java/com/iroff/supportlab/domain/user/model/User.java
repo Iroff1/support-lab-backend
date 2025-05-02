@@ -1,0 +1,17 @@
+package com.iroff.supportlab.domain.user.model;
+
+import com.iroff.supportlab.domain.global.model.BaseTime;
+
+public interface User extends BaseTime {
+	Long getId();
+
+	String getPassword();
+
+	String getEmail();
+
+	String getName();
+
+	String getPhone();
+
+	Role getRole();
+}
