@@ -49,4 +49,5 @@ tasks.withType(Checkstyle).configureEach {
 checkstyle {
 	maxWarnings = 0
 	configFile = file("checkstyle/naver-checkstyle-rules.xml")
+	configProperties = ["suppressionFile": "checkstyle/naver-checkstyle-suppressions.xml"]
 }
