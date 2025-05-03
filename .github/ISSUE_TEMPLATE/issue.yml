@@ -1,14 +1,8 @@
 name: 📝 작업 이슈
 description: 진행할 작업 내용과 상세 TODO를 작성해주세요.
-title: "[작업] "
+title: "[BE/FE] "
 labels: ["task"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        ## 작업 내용
-        > 진행할 작업 내용에 대해서 상세히 설명해 주세요.
-
   - type: textarea
     id: work-content
     attributes:
@@ -18,7 +12,6 @@ body:
         예) 사용자 로그인 기능 구현, 데이터베이스 스키마 설계 등
     validations:
       required: true
-
   - type: textarea
     id: todo-list
     attributes:
@@ -28,4 +21,4 @@ body:
         각 줄마다 `- [ ]` 형식의 Markdown 체크박스를 사용합니다.
       placeholder: |
         - [ ] TODO 1  
-        - [ ] TODO 2  
+        - [ ] TODO 2 
