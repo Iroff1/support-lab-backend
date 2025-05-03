@@ -1,6 +1,6 @@
 name: 📝 작업 이슈
 description: 진행할 작업 내용과 상세 TODO를 작성해주세요.
-title: "[BE] "
+title: "[BE/FE] "
 labels: ["task"]
 body:
   - type: textarea
