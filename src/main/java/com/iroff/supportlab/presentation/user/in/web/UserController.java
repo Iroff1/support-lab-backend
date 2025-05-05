@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
+import com.iroff.supportlab.presentation.common.in.web.exception.APIException;
 
 import lombok.RequiredArgsConstructor;
 

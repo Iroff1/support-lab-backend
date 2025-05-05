@@ -2,7 +2,7 @@ package com.iroff.supportlab.presentation.user.out.persistence;
 
 import com.iroff.supportlab.domain.user.model.Role;
 import com.iroff.supportlab.domain.user.model.User;
-import com.iroff.supportlab.presentation.global.out.persistence.BaseTimeEntity;
+import com.iroff.supportlab.presentation.common.out.persistence.BaseTimeEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
