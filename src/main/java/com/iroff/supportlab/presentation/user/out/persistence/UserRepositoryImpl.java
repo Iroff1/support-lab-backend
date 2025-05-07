@@ -1,10 +1,10 @@
 package com.iroff.supportlab.presentation.user.out.persistence;
 
+import com.iroff.supportlab.domain.user.port.out.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import com.iroff.supportlab.domain.user.port.out.UserRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -13,7 +13,7 @@ public class UserRepositoryImpl implements UserRepository {
 	private final UserJpaRepository userJpaRepository;
 
 	@Override
-	public UserEntity findByEmail(String email) {
+	public Optional<UserEntity> findByEmail(String email) {
 		return userJpaRepository.findByEmail(email);
 	}
 }
