@@ -1,4 +1,4 @@
-package com.iroff.supportlab.domain.global.model;
+package com.iroff.supportlab.domain.common.model;
 
 import java.time.LocalDateTime;
 
