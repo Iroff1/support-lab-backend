@@ -1,4 +1,4 @@
-package com.iroff.supportlab.presentation.config.global.security;
+package com.iroff.supportlab.adapter.config.global.security;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -6,15 +6,15 @@ import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.iroff.supportlab.presentation.user.out.persistence.UserEntity;
+import com.iroff.supportlab.domain.user.model.User;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 class CustomUserDetails implements UserDetails {
-	private final UserEntity user;
+	private final User user;
 
-	public UserEntity getUserEntity() {
+	public User getUser() {
 		return user;
 	}
 

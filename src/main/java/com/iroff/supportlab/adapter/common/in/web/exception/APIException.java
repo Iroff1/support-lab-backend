@@ -1,4 +1,4 @@
-package com.iroff.supportlab.presentation.common.in.web.exception;
+package com.iroff.supportlab.adapter.common.in.web.exception;
 
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.common.port.in.exception.ErrorInfo;

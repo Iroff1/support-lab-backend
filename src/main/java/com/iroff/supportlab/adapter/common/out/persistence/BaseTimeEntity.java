@@ -1,4 +1,4 @@
-package com.iroff.supportlab.presentation.common.out.persistence;
+package com.iroff.supportlab.adapter.common.out.persistence;
 
 import java.time.LocalDateTime;
 

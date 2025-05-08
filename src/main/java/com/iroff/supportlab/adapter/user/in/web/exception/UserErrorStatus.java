@@ -1,4 +1,4 @@
-package com.iroff.supportlab.presentation.user.in.web.exception;
+package com.iroff.supportlab.adapter.user.in.web.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.iroff.supportlab.presentation.common.in.web.exception.ErrorStatus;
+import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatus;
 
 @Component
 public class UserErrorStatus implements ErrorStatus {

@@ -1,4 +1,4 @@
-package com.iroff.supportlab.presentation.common.in.web.exception;
+package com.iroff.supportlab.adapter.common.in.web.exception;
 
 import org.springframework.http.HttpStatus;
 
