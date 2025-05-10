@@ -13,11 +13,12 @@ import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
 
 	private final SignUpUserUseCase signUpUserUseCase;
@@ -25,7 +26,7 @@ public class UserController {
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<SignUpUserResponse> signUp(
-		@RequestBody SignUpUserRequest request
+		@Valid @RequestBody SignUpUserRequest request
 	) {
 		SignUpUserResponse response;
 		try {

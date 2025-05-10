@@ -14,6 +14,12 @@ public class UserErrorStatus implements ErrorStatus {
 
 	public UserErrorStatus() {
 		errorMap.put("U001", HttpStatus.BAD_REQUEST);
+		errorMap.put("U002", HttpStatus.BAD_REQUEST);
+		errorMap.put("U003", HttpStatus.BAD_REQUEST);
+		errorMap.put("U004", HttpStatus.BAD_REQUEST);
+		errorMap.put("U005", HttpStatus.BAD_REQUEST);
+		errorMap.put("U006", HttpStatus.BAD_REQUEST);
+		errorMap.put("U007", HttpStatus.BAD_REQUEST);
 	}
 
 	@Override

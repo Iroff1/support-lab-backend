@@ -1,6 +1,8 @@
 package com.iroff.supportlab.adapter.common.in.web.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -32,5 +34,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		String message = "[" + code + "] " + desc;
 		ErrorResponse response = ErrorResponse.of(code, desc, message);
 		return ResponseEntity.internalServerError().body(response);
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+		String code = "E001";
+		String desc = "입력값 검증 실패";
+		StringBuilder messageBuilder = new StringBuilder();
+
+		ex.getBindingResult().getAllErrors().forEach((error) -> {
+			String fieldName = ((FieldError)error).getField();
+			String errorMessage = error.getDefaultMessage();
+			messageBuilder.append(fieldName).append(": ").append(errorMessage).append(", ");
+		});
+
+		String message = messageBuilder.toString().replaceAll(", $", "");
+		ErrorResponse response = ErrorResponse.of(code, desc, message);
+		return ResponseEntity.badRequest().body(response);
 	}
 }
