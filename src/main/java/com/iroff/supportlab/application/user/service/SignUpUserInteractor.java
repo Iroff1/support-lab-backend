@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 import com.iroff.supportlab.adapter.user.out.persistence.UserEntity;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
+import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.model.Role;
 import com.iroff.supportlab.domain.user.model.User;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
-import com.iroff.supportlab.domain.user.port.out.UserRepository;
-import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
+import com.iroff.supportlab.domain.user.port.out.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,10 +23,6 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 
 	@Override
 	public SignUpUserResponse signUp(SignUpUserRequest request) {
-		if (!isValidEmail(request.email())) {
-			throw new DomainException(UserError.INVALID_EMAIL);
-		}
-
 		if (userRepository.existsByEmail(request.email())) {
 			throw new DomainException(UserError.EMAIL_ALREADY_EXISTS);
 		}
@@ -54,7 +50,4 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 		return true;
 	}
 
-	private boolean isValidEmail(String email) {
-		return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
-	}
 }
