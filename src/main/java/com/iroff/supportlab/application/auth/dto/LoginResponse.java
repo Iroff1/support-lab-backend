@@ -1,4 +1,6 @@
 package com.iroff.supportlab.application.auth.dto;
 
-public record LoginResponse() {
+public record LoginResponse(
+	String accessToken
+) {
 }
