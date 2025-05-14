@@ -7,3 +7,8 @@ springdoc:
     path: /api-docs
   api-docs:
     path: /api/v3
+
+  config:
+    import:
+      - optional:file:.env.${spring.profiles.active}  # 먼저 .env.dev/.env.prod
+      - optional:file:.env
