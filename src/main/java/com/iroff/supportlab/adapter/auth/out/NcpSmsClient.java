@@ -20,8 +20,6 @@ import com.iroff.supportlab.adapter.auth.out.dto.NcpSmsRequest;
 import com.iroff.supportlab.adapter.auth.out.dto.NcpSmsResponse;
 import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
 import com.iroff.supportlab.domain.auth.port.out.SmsClient;
-import com.iroff.supportlab.domain.auth.port.out.VerificationCodeRepository;
-import com.iroff.supportlab.domain.auth.util.CodeGenerator;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 
 import lombok.RequiredArgsConstructor;
@@ -34,13 +32,11 @@ public class NcpSmsClient implements SmsClient {
 
 	private final SmsProperties smsProperties;
 	private final NcpProperties ncpProperties;
-	private final CodeGenerator codeGenerator;
-	private final VerificationCodeRepository codeRepository;
 
 	@Override
-	public void sendCode(String phone) {
+	public void sendCode(String phone, String code) {
 		WebClient webClient = initWebClient();
-		NcpSmsRequest request = makeRequest(phone);
+		NcpSmsRequest request = makeRequest(phone, code);
 
 		NcpSmsResponse ncpSmsResponse = webClient.post()
 			.uri(uriBuilder -> uriBuilder
@@ -56,18 +52,6 @@ public class NcpSmsClient implements SmsClient {
 					}))
 			.bodyToMono(NcpSmsResponse.class)
 			.block(Duration.ofSeconds(10));
-	}
-
-	@Override
-	public boolean verifyCode(String phone, String code) {
-		String savedCode = codeRepository.find(phone)
-			.orElseThrow(() -> new DomainException(AuthError.CODE_NOT_EXISTS));
-
-		if (!savedCode.equals(code)) {
-			throw new DomainException(AuthError.VERIFY_CODE_FAILED);
-		}
-		codeRepository.remove(phone);
-		return true;
 	}
 
 	private WebClient initWebClient() {
@@ -88,15 +72,13 @@ public class NcpSmsClient implements SmsClient {
 			.build();
 	}
 
-	private NcpSmsRequest makeRequest(String phone) {
-		String code = codeGenerator.generateCode();
+	private NcpSmsRequest makeRequest(String phone, String code) {
 		String content = new StringBuilder()
 			.append("[")
 			.append(code)
 			.append("] ")
 			.append(smsProperties.getAuthTemplate())
 			.toString();
-		codeRepository.save(phone, code, Duration.ofMinutes(3));
 
 		NcpSmsRequest request = NcpSmsRequest.builder()
 			.from(ncpProperties.getFrom())

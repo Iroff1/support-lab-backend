@@ -8,16 +8,12 @@ import com.iroff.supportlab.adapter.auth.out.NcpSmsClient;
 import com.iroff.supportlab.adapter.auth.out.config.NcpProperties;
 import com.iroff.supportlab.adapter.auth.out.config.SmsProperties;
 import com.iroff.supportlab.domain.auth.port.out.SmsClient;
-import com.iroff.supportlab.domain.auth.port.out.VerificationCodeRepository;
-import com.iroff.supportlab.domain.auth.util.CodeGenerator;
 
 @Configuration
 public class SmsConfig {
 	@Bean
 	@ConditionalOnProperty(name = "SMS_PROVIDER", havingValue = "ncp")
-	SmsClient ncpSmsClient(SmsProperties smsProperties, NcpProperties ncpProperties,
-		CodeGenerator codeGenerator,
-		VerificationCodeRepository codeRepository) {
-		return new NcpSmsClient(smsProperties, ncpProperties, codeGenerator, codeRepository);
+	SmsClient ncpSmsClient(SmsProperties smsProperties, NcpProperties ncpProperties) {
+		return new NcpSmsClient(smsProperties, ncpProperties);
 	}
 }
