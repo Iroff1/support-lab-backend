@@ -96,7 +96,7 @@ public class NcpSmsRequest {
 		 * 수신번호 (숫자만 입력 가능, '-' 제외)
 		 */
 		@NotBlank
-		@Pattern(regexp = "\\d+", message = "to must be numeric without dashes")
+		@KoreanPhone
 		private String to;
 
 		/**
