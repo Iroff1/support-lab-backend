@@ -17,6 +17,7 @@ import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeUseCase;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -30,10 +31,15 @@ public class AuthController {
 
 	@PostMapping("/send-code")
 	public ResponseEntity<ResponseDTO<Void>> sendCode(
-		@Valid @RequestBody SendCodeRequest request
+		@Valid @RequestBody SendCodeRequest request,
+		HttpServletRequest servletRequest
 	) {
+		String ip = servletRequest.getHeader("X-Forwarded-For");
+		if (ip == null) {
+			ip = servletRequest.getRemoteAddr();
+		}
 		try {
-			sendCodeUseCase.sendCode(request);
+			sendCodeUseCase.sendCode(request, ip);
 			ResponseDTO<Void> response = new ResponseDTO<>(ResponseCode.OK, null);
 			return ResponseEntity.ok().body(response);
 		} catch (DomainException ex) {

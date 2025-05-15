@@ -16,6 +16,7 @@ public class AuthErrorStatus implements ErrorStatus {
 		errorMap.put("A001", HttpStatus.BAD_REQUEST);
 		errorMap.put("A002", HttpStatus.BAD_REQUEST);
 		errorMap.put("A003", HttpStatus.BAD_REQUEST);
+		errorMap.put("A004", HttpStatus.TOO_MANY_REQUESTS);
 	}
 
 	@Override

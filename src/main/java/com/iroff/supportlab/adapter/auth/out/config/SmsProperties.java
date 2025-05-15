@@ -12,4 +12,10 @@ import lombok.Data;
 public class SmsProperties {
 	@Value("${sms.template.auth}")
 	private String authTemplate;
+
+	@Value("${sms.limit.amount}")
+	private Long limitAmount;
+
+	@Value("${sms.limit.duration-minutes}")
+	private Integer limitDurationMinutes;
 }
