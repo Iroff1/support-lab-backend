@@ -3,7 +3,7 @@ package com.iroff.supportlab.adapter.auth.out.persistence;
 import java.time.Duration;
 import java.util.Optional;
 
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.iroff.supportlab.domain.auth.port.out.VerificationCodeRepository;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class RedisVerificationCodeRepository implements VerificationCodeRepository {
 
 	private static final String KEY_PREFIX = "otp:";
-	private final RedisTemplate<String, String> redis;
+	private final StringRedisTemplate redis;
 
 	@Override
 	public void save(String phone, String code, Duration ttl) {
