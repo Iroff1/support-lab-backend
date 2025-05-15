@@ -11,10 +11,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NcpSmsRequest {
@@ -86,7 +86,7 @@ public class NcpSmsRequest {
 	 */
 	private String reserveTimeZone = "Asia/Seoul";
 
-	@Data
+	@Getter
 	@Builder
 	@NoArgsConstructor
 	@AllArgsConstructor
@@ -113,7 +113,8 @@ public class NcpSmsRequest {
 		private String content;
 	}
 
-	@Data
+	@Getter
+	@Builder
 	@NoArgsConstructor
 	@AllArgsConstructor
 	public static class FileDto {

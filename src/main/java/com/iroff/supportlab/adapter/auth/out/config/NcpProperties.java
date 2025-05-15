@@ -3,9 +3,9 @@ package com.iroff.supportlab.adapter.auth.out.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Component
 @ConfigurationProperties(prefix = "sms.ncp")
 public class NcpProperties {
