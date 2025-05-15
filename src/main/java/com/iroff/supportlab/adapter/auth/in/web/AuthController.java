@@ -34,8 +34,11 @@ public class AuthController {
 		@Valid @RequestBody SendCodeRequest request,
 		HttpServletRequest servletRequest
 	) {
-		String ip = servletRequest.getHeader("X-Forwarded-For");
-		if (ip == null) {
+		String xff = servletRequest.getHeader("X-Forwarded-For");
+		String ip;
+		if (xff != null && !xff.isBlank()) {
+			ip = xff.split(",")[0].trim();
+		} else {
 			ip = servletRequest.getRemoteAddr();
 		}
 		try {
