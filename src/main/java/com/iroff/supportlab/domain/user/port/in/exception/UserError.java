@@ -12,19 +12,19 @@ public enum UserError implements ErrorInfo {
 	INVALID_PASSWORD_SPECIAL("U007", "비밀번호는 최소 하나 이상의 특수문자를 포함해야 합니다."),
 	INVALID_PASSWORD_SEQUENCE("U008", "연속된 문자나 반복된 문자는 사용할 수 없습니다.");
 
+	private final String code;
+	private final String desc;
+	
 	UserError(String code, String desc) {
 		this.code = code;
 		this.desc = desc;
 	}
 
-	private final String code;
-	private final String desc;
-
 	@Override
 	public String getCode() {
 		return code;
 	}
-	
+
 	@Override
 	public String getDesc() {
 		return desc;
