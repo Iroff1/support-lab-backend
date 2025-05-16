@@ -1,5 +1,6 @@
 package com.iroff.supportlab.adapter.auth.in.web;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,8 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
 		LoginResponse response = authUseCase.login(request);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok()
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + response.accessToken())
+			.build();
 	}
 }
