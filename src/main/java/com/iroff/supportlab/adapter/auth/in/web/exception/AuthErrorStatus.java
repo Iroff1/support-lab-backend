@@ -7,16 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatus;
+import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
 
 @Component
 public class AuthErrorStatus implements ErrorStatus {
 	private final Map<String, HttpStatus> errorMap = new HashMap<>();
 
 	public AuthErrorStatus() {
-		errorMap.put("A001", HttpStatus.BAD_REQUEST);
-		errorMap.put("A002", HttpStatus.BAD_REQUEST);
-		errorMap.put("A003", HttpStatus.BAD_REQUEST);
-		errorMap.put("A004", HttpStatus.TOO_MANY_REQUESTS);
+		errorMap.put(AuthError.CODE_NOT_EXISTS.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(AuthError.SEND_CODE_FAILED.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(AuthError.VERIFY_CODE_FAILED.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(AuthError.TOO_MANY_REQUESTS.getCode(), HttpStatus.TOO_MANY_REQUESTS);
 	}
 
 	@Override
