@@ -23,8 +23,7 @@ public class AuthExceptionHandler {
 			ex.getError().getDesc(),
 			ex.getError().getMessage()
 		);
-		return ResponseEntity.status(AuthErrorStatus.INVALID_CREDENTIALS.getStatusCode(ex.getError().getCode()))
-			.body(response);
+		return ResponseEntity.badRequest().body(response);
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)
