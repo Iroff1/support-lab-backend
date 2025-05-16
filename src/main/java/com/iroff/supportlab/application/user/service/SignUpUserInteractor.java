@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import com.iroff.supportlab.adapter.user.out.persistence.UserEntity;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
+import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.model.Role;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
 import com.iroff.supportlab.domain.user.port.out.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -19,14 +21,22 @@ import lombok.RequiredArgsConstructor;
 public class SignUpUserInteractor implements SignUpUserUseCase {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final VerificationStateRepository verificationStateRepository;
 
+	@Transactional
 	@Override
 	public SignUpUserResponse signUp(SignUpUserRequest request) {
 		if (userRepository.existsByEmail(request.email())) {
 			throw new DomainException(UserError.EMAIL_ALREADY_EXISTS);
+		} else if (userRepository.existsByPhone(request.phone())) {
+			throw new DomainException(UserError.PHONE_ALREADY_EXISTS);
+		} else if (!verificationStateRepository.isVerified(request.phone())) {
+			throw new DomainException(UserError.VERIFICATION_FAILED);
 		}
 
 		validatePassword(request.password());
+
+		verificationStateRepository.remove(request.phone());
 
 		UserEntity user = UserEntity.builder()
 			.email(request.email())
@@ -35,7 +45,11 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 			.phone(request.phone())
 			.role(Role.USER)
 			.build();
-		userRepository.save(user);
+		try {
+			userRepository.save(user);
+		} catch (Exception e) {
+			throw new DomainException(UserError.EMAIL_ALREADY_EXISTS);
+		}
 
 		return new SignUpUserResponse(
 			user.getId(),
