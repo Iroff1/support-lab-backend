@@ -10,4 +10,6 @@ public interface UserRepository {
 	void save(User user);
 
 	boolean existsByEmail(String email);
+
+	boolean existsByPhone(String phone);
 }
