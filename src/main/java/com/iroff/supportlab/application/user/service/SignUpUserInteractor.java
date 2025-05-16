@@ -32,6 +32,10 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 			throw new DomainException(UserError.PHONE_ALREADY_EXISTS);
 		} else if (!verificationStateRepository.isVerified(request.phone())) {
 			throw new DomainException(UserError.VERIFICATION_FAILED);
+		} else if (request.privacyPolicyAgreed() == null || !request.privacyPolicyAgreed()) {
+			throw new DomainException(UserError.PRIVACY_POLICY_AGREE_IS_NECCESARY);
+		} else if (request.marketingAgreed() == null) {
+			throw new DomainException(UserError.INVALID_MARKETING_AGREE);
 		}
 
 		validatePassword(request.password());
@@ -44,6 +48,8 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 			.name(request.name())
 			.phone(request.phone())
 			.role(Role.USER)
+			.privacyPolicyAgreed(request.privacyPolicyAgreed())
+			.marketingAgreed(request.marketingAgreed())
 			.build();
 		try {
 			userRepository.save(user);
@@ -55,7 +61,10 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 			user.getId(),
 			user.getEmail(),
 			user.getName(),
-			user.getPhone()
+			user.getPhone(),
+			user.getPrivacyPolicyAgreed(),
+			user.getMarketingAgreed(),
+			user.getCreatedAt()
 		);
 	}
 
