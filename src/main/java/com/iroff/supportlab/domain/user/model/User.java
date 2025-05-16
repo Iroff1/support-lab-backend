@@ -14,4 +14,8 @@ public interface User extends BaseTime {
 	String getPhone();
 
 	Role getRole();
+
+	Boolean getPrivacyPolicyAgreed();
+
+	Boolean getMarketingAgreed();
 }

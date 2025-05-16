@@ -43,4 +43,10 @@ public class UserEntity extends BaseTimeEntity implements User {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Role role;
+
+	@Column(nullable = false)
+	private Boolean privacyPolicyAgreed;
+
+	@Column(nullable = false)
+	private Boolean marketingAgreed;
 }
