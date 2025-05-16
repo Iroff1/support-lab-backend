@@ -24,6 +24,6 @@ public class AuthController {
 		LoginResponse response = authUseCase.login(request);
 		return ResponseEntity.ok()
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + response.accessToken())
-			.build();
+			.body(response);
 	}
 }
