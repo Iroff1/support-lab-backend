@@ -9,19 +9,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iroff.supportlab.adapter.auth.in.web.exception.AuthErrorStatus;
 import com.iroff.supportlab.adapter.common.in.web.exception.APIException;
+import com.iroff.supportlab.application.auth.dto.LoginRequest;
+import com.iroff.supportlab.application.auth.dto.LoginResponse;
 import com.iroff.supportlab.application.auth.dto.SendCodeRequest;
 import com.iroff.supportlab.application.auth.dto.VerifyCodeRequest;
 import com.iroff.supportlab.application.auth.dto.VerifyCodeResponse;
 import com.iroff.supportlab.application.common.dto.ResponseDTO;
 import com.iroff.supportlab.application.common.dto.vo.ResponseCode;
+import com.iroff.supportlab.domain.auth.port.in.AuthUseCase;
 import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeUseCase;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
-import com.iroff.supportlab.application.auth.dto.LoginRequest;
-import com.iroff.supportlab.application.auth.dto.LoginResponse;
-import com.iroff.supportlab.application.common.dto.ResponseDTO;
-import com.iroff.supportlab.application.common.dto.vo.ResponseCode;
-import com.iroff.supportlab.domain.auth.port.in.AuthUseCase;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -34,7 +32,7 @@ public class AuthController {
 	private final SendCodeUseCase sendCodeUseCase;
 	private final VerifyCodeUseCase verifyCodeUseCase;
 	private final AuthErrorStatus authErrorStatus;
-  private final AuthUseCase authUseCase;
+	private final AuthUseCase authUseCase;
 
 	@PostMapping("/send-code")
 	public ResponseEntity<ResponseDTO<Void>> sendCode(
@@ -69,14 +67,14 @@ public class AuthController {
 			throw new APIException(ex, authErrorStatus);
 		}
 	}
-  
-  @PostMapping("/login")
+
+	@PostMapping("/login")
 	public ResponseEntity<ResponseDTO<LoginResponse>> login(@RequestBody LoginRequest request) {
 		LoginResponse response = authUseCase.login(request);
 		ResponseDTO<LoginResponse> responseDTO = new ResponseDTO<>(ResponseCode.OK, response);
 		return ResponseEntity.ok()
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + response.accessToken())
 			.body(responseDTO);
-  }
-  
+	}
+
 }
