@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iroff.supportlab.application.auth.dto.LoginRequest;
 import com.iroff.supportlab.application.auth.dto.LoginResponse;
+import com.iroff.supportlab.application.common.dto.ResponseDTO;
+import com.iroff.supportlab.application.common.dto.vo.ResponseCode;
 import com.iroff.supportlab.domain.auth.port.in.AuthUseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,11 @@ public class AuthController {
 	private final AuthUseCase authUseCase;
 
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+	public ResponseEntity<ResponseDTO<LoginResponse>> login(@RequestBody LoginRequest request) {
 		LoginResponse response = authUseCase.login(request);
+		ResponseDTO<LoginResponse> responseDTO = new ResponseDTO<>(ResponseCode.OK, response);
 		return ResponseEntity.ok()
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + response.accessToken())
-			.body(response);
+			.body(responseDTO);
 	}
 }
