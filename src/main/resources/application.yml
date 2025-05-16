@@ -7,3 +7,7 @@ springdoc:
     path: /api-docs
   api-docs:
     path: /api/v3
+
+jwt:
+  secret: "jxgEQeXHuPq8VdbyYFNkANdudQ53YUn4"
+  expiration: 3600000
