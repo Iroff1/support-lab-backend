@@ -16,7 +16,7 @@ import com.iroff.supportlab.application.auth.dto.VerifyCodeRequest;
 import com.iroff.supportlab.application.auth.dto.VerifyCodeResponse;
 import com.iroff.supportlab.application.common.dto.ResponseDTO;
 import com.iroff.supportlab.application.common.dto.vo.ResponseCode;
-import com.iroff.supportlab.domain.auth.port.in.AuthUseCase;
+import com.iroff.supportlab.domain.auth.port.in.LoginUseCase;
 import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeUseCase;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
@@ -32,7 +32,7 @@ public class AuthController {
 	private final SendCodeUseCase sendCodeUseCase;
 	private final VerifyCodeUseCase verifyCodeUseCase;
 	private final AuthErrorStatus authErrorStatus;
-	private final AuthUseCase authUseCase;
+	private final LoginUseCase loginUseCase;
 
 	@PostMapping("/send-code")
 	public ResponseEntity<ResponseDTO<Void>> sendCode(
@@ -70,7 +70,7 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseDTO<LoginResponse>> login(@RequestBody LoginRequest request) {
-		LoginResponse response = authUseCase.login(request);
+		LoginResponse response = loginUseCase.login(request);
 		ResponseDTO<LoginResponse> responseDTO = new ResponseDTO<>(ResponseCode.OK, response);
 		return ResponseEntity.ok()
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + response.accessToken())
