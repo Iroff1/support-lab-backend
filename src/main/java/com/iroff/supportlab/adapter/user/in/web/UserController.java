@@ -1,5 +1,7 @@
 package com.iroff.supportlab.adapter.user.in.web;
 
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/users")
 public class UserController {
 
+	private static final String USER_PATH = "/api/users";
 	private final SignUpUserUseCase signUpUserUseCase;
 	private final UserErrorStatus errorStatus;
 
@@ -33,7 +36,8 @@ public class UserController {
 		try {
 			SignUpUserResponse response = signUpUserUseCase.signUp(request);
 			ResponseDTO<SignUpUserResponse> responseDto = new ResponseDTO<>(ResponseCode.OK, response);
-			return ResponseEntity.ok(responseDto);
+			URI location = URI.create(USER_PATH + "/" + response.id());
+			return ResponseEntity.created(location).body(responseDto);
 		} catch (DomainException e) {
 			throw new APIException(e, errorStatus);
 		}
