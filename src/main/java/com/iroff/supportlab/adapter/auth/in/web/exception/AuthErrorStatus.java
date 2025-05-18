@@ -18,6 +18,11 @@ public class AuthErrorStatus implements ErrorStatus {
 		errorMap.put(AuthError.SEND_CODE_FAILED.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(AuthError.VERIFY_CODE_FAILED.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(AuthError.TOO_MANY_REQUESTS.getCode(), HttpStatus.TOO_MANY_REQUESTS);
+		errorMap.put(AuthError.NEED_AUTHORIZATION.getCode(), HttpStatus.UNAUTHORIZED);
+		errorMap.put(AuthError.INVALID_AUTHORIZATION.getCode(), HttpStatus.UNAUTHORIZED);
+		errorMap.put(AuthError.EXPIRED_TOKEN.getCode(), HttpStatus.UNAUTHORIZED);
+		errorMap.put(AuthError.TOKEN_EXPIRED.getCode(), HttpStatus.FORBIDDEN);
+		errorMap.put(AuthError.INVALID_REQUEST.getCode(), HttpStatus.BAD_REQUEST);
 	}
 
 	@Override
