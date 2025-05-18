@@ -7,10 +7,10 @@ public enum AuthError implements ErrorInfo {
 	VERIFY_CODE_FAILED("인증 코드 검증에 실패했습니다."),
 	CODE_NOT_EXISTS("인증 코드가 만료되었거나 발급되지 않았습니다. 다시 발급해주세요."),
 	TOO_MANY_REQUESTS("너무 많은 요청이 발생했습니다."),
-	UNAUTHORIZED_1("인증이 필요합니다."),
-	UNAUTHORIZED_2("유효하지 않은 인증 정보입니다."),
-	UNAUTHORIZED_3("토큰이 만료되었습니다."),
-	ACCESS_DENIED("접근 권한이 없습니다."),
+	NEED_AUTHORIZATION("인증이 필요합니다."),
+	INVALID_AUTHORIZATION("유효하지 않은 인증 정보입니다."),
+	EXPIRED_TOKEN("토큰이 만료되었습니다."),
+	TOKEN_EXPIRED("접근 권한이 없습니다."),
 	INVALID_REQUEST("잘못된 요청입니다.");
 
 	private final String desc;
