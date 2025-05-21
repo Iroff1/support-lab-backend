@@ -21,6 +21,11 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	public Optional<User> findByNameAndPhone(String name, String phone) {
+		return userJpaRepository.findByNameAndPhone(name, phone);
+	}
+
+	@Override
 	public void save(User user) {
 		userJpaRepository.save(user);
 	}
