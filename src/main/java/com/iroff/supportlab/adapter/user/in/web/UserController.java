@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iroff.supportlab.adapter.common.in.web.exception.APIException;
 import com.iroff.supportlab.adapter.user.in.web.exception.UserErrorStatus;
-import com.iroff.supportlab.application.common.dto.ResponseDTO;
-import com.iroff.supportlab.application.common.dto.vo.ResponseCode;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
@@ -30,14 +28,13 @@ public class UserController {
 	private final UserErrorStatus errorStatus;
 
 	@PostMapping("/sign-up")
-	public ResponseEntity<ResponseDTO<SignUpUserResponse>> signUp(
+	public ResponseEntity<SignUpUserResponse> signUp(
 		@Valid @RequestBody SignUpUserRequest request
 	) {
 		try {
 			SignUpUserResponse response = signUpUserUseCase.signUp(request);
-			ResponseDTO<SignUpUserResponse> responseDto = new ResponseDTO<>(ResponseCode.OK, response);
 			URI location = URI.create(USER_PATH + "/" + response.id());
-			return ResponseEntity.created(location).body(responseDto);
+			return ResponseEntity.created(location).body(response);
 		} catch (DomainException e) {
 			throw new APIException(e, errorStatus);
 		}

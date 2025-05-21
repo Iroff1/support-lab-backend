@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.iroff.supportlab.application.common.dto.ResponseDTO;
-import com.iroff.supportlab.application.common.dto.vo.ResponseCode;
+import com.iroff.supportlab.adapter.common.in.web.dto.ResponseDTO;
+import com.iroff.supportlab.adapter.common.in.web.dto.vo.ResponseCode;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.common.port.in.exception.ErrorInfo;
 
