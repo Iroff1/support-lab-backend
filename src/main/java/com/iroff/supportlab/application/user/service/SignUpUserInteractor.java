@@ -23,21 +23,21 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 	private final PasswordEncoder passwordEncoder;
 	private final VerificationStateRepository verificationStateRepository;
 
+	private void checkCondition(boolean condition, UserError error) {
+		if (!condition) {
+			throw new DomainException(error);
+		}
+	}
+
 	@Transactional
 	@Override
 	public SignUpUserResponse signUp(SignUpUserRequest request) {
-		if (userRepository.existsByEmail(request.email())) {
-			throw new DomainException(UserError.EMAIL_ALREADY_EXISTS);
-		} else if (userRepository.existsByPhone(request.phone())) {
-			throw new DomainException(UserError.PHONE_ALREADY_EXISTS);
-		} else if (!verificationStateRepository.isVerified(request.phone())) {
-			throw new DomainException(UserError.VERIFICATION_FAILED);
-		} else if (request.privacyPolicyAgreed() == null || !request.privacyPolicyAgreed()) {
-			throw new DomainException(UserError.PRIVACY_POLICY_AGREE_IS_NECCESARY);
-		} else if (request.marketingAgreed() == null) {
-			throw new DomainException(UserError.INVALID_MARKETING_AGREE);
-		}
-
+		checkCondition(!userRepository.existsByEmail(request.email()), UserError.EMAIL_ALREADY_EXISTS);
+		checkCondition(!userRepository.existsByPhone(request.phone()), UserError.PHONE_ALREADY_EXISTS);
+		checkCondition(verificationStateRepository.isVerified(request.phone()), UserError.VERIFICATION_FAILED);
+		checkCondition(request.privacyPolicyAgreed() != null && request.privacyPolicyAgreed(),
+			UserError.PRIVACY_POLICY_AGREE_IS_NECCESARY);
+		checkCondition(request.marketingAgreed() != null, UserError.INVALID_MARKETING_AGREE);
 		validatePassword(request.password());
 
 		verificationStateRepository.remove(request.phone());
