@@ -40,6 +40,7 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 		checkCondition(request.privacyPolicyAgreed() != null && request.privacyPolicyAgreed(),
 			UserError.PRIVACY_POLICY_AGREE_IS_NECCESARY);
 		checkCondition(request.marketingAgreed() != null, UserError.INVALID_MARKETING_AGREE);
+
 		validatePassword(request.password());
 
 		verificationStateRepository.remove(VerificationType.SIGN_UP_VERIFIED, request.phone());
