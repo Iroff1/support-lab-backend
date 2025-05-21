@@ -5,6 +5,7 @@ import java.time.Duration;
 import org.springframework.stereotype.Service;
 
 import com.iroff.supportlab.application.auth.dto.SendCodeRequest;
+import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
 import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
 import com.iroff.supportlab.domain.auth.port.out.SmsClient;
@@ -32,7 +33,7 @@ public class SendCodeInteractor implements SendCodeUseCase {
 		String phone = request.phone();
 		String code = smsCodeGenerator.generateCode();
 		smsClient.sendCode(phone, code);
-		verificationCodeRepository.save(phone, code, Duration.ofMinutes(LIMIT));
+		verificationCodeRepository.save(VerificationType.SIGN_UP_CODE, code, phone, Duration.ofMinutes(LIMIT));
 	}
 
 	@Override

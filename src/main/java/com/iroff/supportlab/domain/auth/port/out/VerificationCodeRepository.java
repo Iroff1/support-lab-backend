@@ -3,10 +3,12 @@ package com.iroff.supportlab.domain.auth.port.out;
 import java.time.Duration;
 import java.util.Optional;
 
+import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
+
 public interface VerificationCodeRepository {
-	void save(String phone, String code, Duration ttl);
+	void save(VerificationType type, String code, String phone, Duration ttl);
 
-	Optional<String> find(String phone);
+	Optional<String> find(VerificationType type, String phone);
 
-	void remove(String phone);
+	void remove(VerificationType type, String phone);
 }

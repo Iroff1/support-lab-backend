@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.iroff.supportlab.adapter.user.out.persistence.UserEntity;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
+import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
 import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.model.Role;
@@ -34,13 +35,14 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 	public SignUpUserResponse signUp(SignUpUserRequest request) {
 		checkCondition(!userRepository.existsByEmail(request.email()), UserError.EMAIL_ALREADY_EXISTS);
 		checkCondition(!userRepository.existsByPhone(request.phone()), UserError.PHONE_ALREADY_EXISTS);
-		checkCondition(verificationStateRepository.isVerified(request.phone()), UserError.VERIFICATION_FAILED);
+		checkCondition(verificationStateRepository.isVerified(VerificationType.SIGN_UP_VERIFIED, request.phone()),
+			UserError.VERIFICATION_FAILED);
 		checkCondition(request.privacyPolicyAgreed() != null && request.privacyPolicyAgreed(),
 			UserError.PRIVACY_POLICY_AGREE_IS_NECCESARY);
 		checkCondition(request.marketingAgreed() != null, UserError.INVALID_MARKETING_AGREE);
 		validatePassword(request.password());
 
-		verificationStateRepository.remove(request.phone());
+		verificationStateRepository.remove(VerificationType.SIGN_UP_VERIFIED, request.phone());
 
 		UserEntity user = UserEntity.builder()
 			.email(request.email())
