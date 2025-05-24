@@ -12,12 +12,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GmailSendEmailAdapter implements SendEmailPort {
 
+	private static final String SENDER = "iroff.lab";
 	private final JavaMailSender mailSender;
 
 	@Override
 	public void sendEmail(String to, String subject, String content) {
 		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom("iroff.lab");
+		message.setFrom(SENDER);
 		message.setTo(to);
 		message.setSubject(subject);
 		message.setText(content);
