@@ -24,9 +24,9 @@ public class FindEmailInteractor implements FindEmailUseCase {
 		String name = request.name();
 		String phone = request.phone();
 
-		Optional<User> user = userRepository.findByNameAndPhone(name, phone);
+		Optional<User> user = userRepository.findByPhone(phone);
 		String email = null;
-		if (user.isPresent()) {
+		if (user.isPresent() && user.get().getName().equals(name)) {
 			email = EmailMaskingUtil.maskMiddle(user.get().getEmail());
 		}
 		return new FindEmailResponse(email);

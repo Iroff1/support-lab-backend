@@ -21,8 +21,8 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public Optional<User> findByNameAndPhone(String name, String phone) {
-		return userJpaRepository.findByNameAndPhone(name, phone);
+	public Optional<User> findByPhone(String phone) {
+		return userJpaRepository.findByPhone(phone);
 	}
 
 	@Override
@@ -38,5 +38,10 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public boolean existsByPhone(String phone) {
 		return userJpaRepository.existsByPhone(phone);
+	}
+
+	@Override
+	public long count() {
+		return userJpaRepository.count();
 	}
 }

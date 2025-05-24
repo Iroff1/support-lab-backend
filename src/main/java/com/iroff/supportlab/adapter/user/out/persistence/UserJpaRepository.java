@@ -9,7 +9,7 @@ import com.iroff.supportlab.domain.user.model.User;
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 	Optional<User> findByEmail(String email);
 
-	Optional<User> findByNameAndPhone(String name, String phone);
+	Optional<User> findByPhone(String phone);
 
 	void save(User user);
 
