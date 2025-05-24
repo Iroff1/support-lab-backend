@@ -1,17 +1,29 @@
 spring:
   profiles:
     active: local
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 springdoc:
   swagger-ui:
     path: /api-docs
   api-docs:
     path: /api/v3
-    
+
   config:
     import:
       - optional:file:.env.${spring.profiles.active}  # 먼저 .env.dev/.env.prod
       - optional:file:.env
+
 jwt:
   secret: "jxgEQeXHuPq8VdbyYFNkANdudQ53YUn4"
   expiration: 3600000
