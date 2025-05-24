@@ -15,7 +15,7 @@ public class KoreanPhoneValidator implements ConstraintValidator<KoreanPhone, St
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 		if (value == null) {
-			return true;
+			return false;
 		}
 		return value.matches(REGEX);
 	}

@@ -21,6 +21,11 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	public Optional<User> findByPhone(String phone) {
+		return userJpaRepository.findByPhone(phone);
+	}
+
+	@Override
 	public void save(User user) {
 		userJpaRepository.save(user);
 	}
@@ -33,5 +38,10 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public boolean existsByPhone(String phone) {
 		return userJpaRepository.existsByPhone(phone);
+	}
+
+	@Override
+	public long count() {
+		return userJpaRepository.count();
 	}
 }

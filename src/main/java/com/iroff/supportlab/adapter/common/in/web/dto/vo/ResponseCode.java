@@ -1,4 +1,4 @@
-package com.iroff.supportlab.application.common.dto.vo;
+package com.iroff.supportlab.adapter.common.in.web.dto.vo;
 
 import org.springframework.http.HttpStatus;
 
