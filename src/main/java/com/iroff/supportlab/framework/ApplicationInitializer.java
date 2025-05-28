@@ -28,6 +28,7 @@ public class ApplicationInitializer {
 				.name("지원사업연구소")
 				.phone("01012345678")
 				.role(Role.USER)
+				.termsOfServiceAgreed(true)
 				.marketingAgreed(true)
 				.privacyPolicyAgreed(true)
 				.build();

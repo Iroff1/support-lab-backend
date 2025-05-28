@@ -7,6 +7,7 @@ public record SignUpUserResponse(
 	String email,
 	String name,
 	String phone,
+	Boolean termsOfServiceAgreed,
 	Boolean privacyPolicyAgreed,
 	Boolean marketingAgreed,
 	LocalDateTime createdAt

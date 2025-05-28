@@ -19,7 +19,10 @@ public record SignUpUserRequest(
 	@NotBlank(message = "휴대폰 번호는 필수입니다.")
 	@KoreanPhone
 	String phone,
-	
+
+	@NotNull(message = "이용 약관 동의 여부는 필수입니다.")
+	Boolean termsOfServiceAgreed,
+
 	@NotNull(message = "개인정보 수집 및 이용 동의 여부는 필수입니다.")
 	Boolean privacyPolicyAgreed,
 

@@ -52,6 +52,9 @@ public class UserEntity extends BaseTimeEntity implements User {
 	private Role role;
 
 	@Column(nullable = false)
+	private Boolean termsOfServiceAgreed;
+
+	@Column(nullable = false)
 	private Boolean privacyPolicyAgreed;
 
 	@Column(nullable = false)

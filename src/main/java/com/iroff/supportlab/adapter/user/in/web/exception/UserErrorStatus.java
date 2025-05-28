@@ -23,6 +23,9 @@ public class UserErrorStatus implements ErrorStatus {
 		errorMap.put(UserError.INVALID_PASSWORD_NUMBER.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.INVALID_PASSWORD_SPECIAL.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.INVALID_PASSWORD_SEQUENCE.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(UserError.INVALID_MARKETING_AGREE.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(UserError.TERMS_OF_SERVICE_AGREE_IS_NECCESSARY.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(UserError.PRIVACY_POLICY_AGREE_IS_NECCESARY.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.VERIFICATION_FAILED.getCode(), HttpStatus.BAD_REQUEST);
 	}
 
