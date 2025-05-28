@@ -37,6 +37,8 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 		checkCondition(!userRepository.existsByPhone(request.phone()), UserError.PHONE_ALREADY_EXISTS);
 		checkCondition(verificationStateRepository.isVerified(VerificationType.SIGN_UP_VERIFIED, request.phone()),
 			UserError.VERIFICATION_FAILED);
+		checkCondition(request.termsOfServiceAgreed() != null && request.termsOfServiceAgreed(),
+			UserError.TERMS_OF_SERVICE_AGREE_IS_NECCESSARY);
 		checkCondition(request.privacyPolicyAgreed() != null && request.privacyPolicyAgreed(),
 			UserError.PRIVACY_POLICY_AGREE_IS_NECCESARY);
 		checkCondition(request.marketingAgreed() != null, UserError.INVALID_MARKETING_AGREE);
@@ -51,6 +53,7 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 			.name(request.name())
 			.phone(request.phone())
 			.role(Role.USER)
+			.termsOfServiceAgreed(request.termsOfServiceAgreed())
 			.privacyPolicyAgreed(request.privacyPolicyAgreed())
 			.marketingAgreed(request.marketingAgreed())
 			.build();
@@ -65,10 +68,10 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 			user.getEmail(),
 			user.getName(),
 			user.getPhone(),
+			user.getTermsOfServiceAgreed(),
 			user.getPrivacyPolicyAgreed(),
 			user.getMarketingAgreed(),
-			user.getCreatedAt()
-		);
+			user.getCreatedAt());
 	}
 
 	private void validatePassword(String password) {

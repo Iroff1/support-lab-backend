@@ -24,6 +24,21 @@ springdoc:
       - optional:file:.env.${spring.profiles.active}  # 먼저 .env.dev/.env.prod
       - optional:file:.env
 
+sms:
+  provider: ${SMS_PROVIDER:ncp}
+  limit:
+    amount: ${SMS_LIMIT_AMOUNT}
+    duration-minutes: ${SMS_LIMIT_DURATION_MINUTES}
+  template:
+    auth: ${SMS_TEMPLATE_AUTH}
+  ncp:
+    service-id: ${NCP_SMS_SERVICE_ID}
+    api-url: ${NCP_SMS_API_URL}
+    access-key: ${NCP_ACCESS_KEY}
+    secret-key: ${NCP_SECRET_KEY}
+    country-code: ${NCP_COUNTRY_CODE}
+    from: ${NCP_FROM}
+
 jwt:
   secret: "jxgEQeXHuPq8VdbyYFNkANdudQ53YUn4"
   expiration: 3600000

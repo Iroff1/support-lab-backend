@@ -13,6 +13,7 @@ public enum UserError implements ErrorInfo {
 	INVALID_PASSWORD_SPECIAL("비밀번호는 최소 하나 이상의 특수문자를 포함해야 합니다."),
 	INVALID_PASSWORD_SEQUENCE("연속된 문자나 반복된 문자는 사용할 수 없습니다."),
 	VERIFICATION_FAILED("휴대폰 인증을 먼저 진행해주세요."),
+	TERMS_OF_SERVICE_AGREE_IS_NECCESSARY("이용 약관에 동의해야 합니다."),
 	PRIVACY_POLICY_AGREE_IS_NECCESARY("개인정보 수집 및 이용에 동의해야 합니다."),
 	INVALID_MARKETING_AGREE("마케팅 수신 동의 여부는 필수입니다.");
 
