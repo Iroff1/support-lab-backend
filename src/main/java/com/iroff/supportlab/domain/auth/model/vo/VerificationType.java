@@ -5,8 +5,10 @@ import lombok.Getter;
 @Getter
 public enum VerificationType {
 	SIGN_UP_CODE("signupCode"),
+	FIND_EMAIL("findEmail"),
 	FIND_PASSWORD_CODE("findPasswordCode"),
 	SIGN_UP_VERIFIED("signupVerified"),
+	FIND_EMAIL_VERIFIED("findEmailVerified"),
 	FIND_PASSWORD_VERIFIED("findPasswordVerified");
 
 	private final String value;
