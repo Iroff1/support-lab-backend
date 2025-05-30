@@ -21,7 +21,7 @@ public enum AuthError implements ErrorInfo {
 
 	@Override
 	public String getCode() {
-		return String.format("U%03d", ordinal() + 1);
+		return String.format("A%03d", ordinal() + 1);
 	}
 
 	@Override
