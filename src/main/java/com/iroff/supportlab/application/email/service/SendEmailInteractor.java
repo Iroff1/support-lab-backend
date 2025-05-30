@@ -1,4 +1,4 @@
-package com.iroff.supportlab.application.email;
+package com.iroff.supportlab.application.email.service;
 
 import org.springframework.stereotype.Service;
 
