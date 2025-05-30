@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.iroff.supportlab.adapter.common.util.EmailMaskingUtil;
 import com.iroff.supportlab.application.user.dto.FindEmailRequest;
 import com.iroff.supportlab.application.user.dto.FindEmailResponse;
 import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
@@ -36,7 +35,7 @@ public class FindEmailInteractor implements FindEmailUseCase {
 		Optional<User> user = userRepository.findByPhone(phone);
 		String email = null;
 		if (user.isPresent() && user.get().getName().equals(name)) {
-			email = EmailMaskingUtil.maskMiddle(user.get().getEmail());
+			email = user.get().getEmail();
 		}
 		return new FindEmailResponse(email);
 	}
