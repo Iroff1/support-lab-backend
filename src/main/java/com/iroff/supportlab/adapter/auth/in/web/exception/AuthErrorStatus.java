@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatus;
 import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
 
-@Component
 public class AuthErrorStatus implements ErrorStatus {
 	private final Map<String, HttpStatus> errorMap = new HashMap<>();
 
