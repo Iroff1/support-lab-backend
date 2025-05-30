@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.iroff.supportlab.adapter.auth.in.web.exception.AuthErrorStatus;
 import com.iroff.supportlab.adapter.common.in.web.exception.APIException;
+import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatus;
+import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatusResolver;
 import com.iroff.supportlab.application.auth.dto.LoginRequest;
 import com.iroff.supportlab.application.auth.dto.LoginResponse;
 import com.iroff.supportlab.application.auth.dto.SendCodeRequest;
@@ -29,8 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 	private final SendCodeUseCase sendCodeUseCase;
 	private final VerifyCodeUseCase verifyCodeUseCase;
-	private final AuthErrorStatus authErrorStatus;
 	private final LoginUseCase loginUseCase;
+	private final ErrorStatusResolver errorStatusResolver;
 
 	@PostMapping("/send-code")
 	public ResponseEntity<Void> sendCode(
@@ -47,8 +48,9 @@ public class AuthController {
 		try {
 			sendCodeUseCase.sendCode(request, ip);
 			return ResponseEntity.ok().build();
-		} catch (DomainException ex) {
-			throw new APIException(ex, authErrorStatus);
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
 		}
 	}
 
@@ -59,17 +61,22 @@ public class AuthController {
 		try {
 			VerifyCodeResponse response = verifyCodeUseCase.verifyCode(request);
 			return ResponseEntity.ok().body(response);
-		} catch (DomainException ex) {
-			throw new APIException(ex, authErrorStatus);
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
 		}
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-		LoginResponse response = loginUseCase.login(request);
-		return ResponseEntity.ok()
-			.header(HttpHeaders.AUTHORIZATION, "Bearer " + response.accessToken())
-			.body(response);
+		try {
+			LoginResponse response = loginUseCase.login(request);
+			return ResponseEntity.ok()
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + response.accessToken())
+				.body(response);
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
 	}
-
 }
