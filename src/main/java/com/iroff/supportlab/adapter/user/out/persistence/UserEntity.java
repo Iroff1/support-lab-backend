@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,4 +60,12 @@ public class UserEntity extends BaseTimeEntity implements User {
 
 	@Column(nullable = false)
 	private Boolean marketingAgreed;
+
+	@Version
+	private Long version;
+
+	@Override
+	public void changePassword(String password) {
+		this.password = password;
+	}
 }
