@@ -5,6 +5,8 @@ import java.util.Optional;
 import com.iroff.supportlab.domain.user.model.User;
 
 public interface UserRepository {
+	Optional<User> findById(Long id);
+
 	Optional<User> findByEmail(String email);
 
 	Optional<User> findByPhone(String phone);
