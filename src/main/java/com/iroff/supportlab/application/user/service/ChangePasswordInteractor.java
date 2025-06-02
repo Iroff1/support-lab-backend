@@ -1,64 +1,52 @@
 package com.iroff.supportlab.application.user.service;
 
-import java.util.Optional;
+import static com.iroff.supportlab.domain.user.util.PasswordValidator.*;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.iroff.supportlab.application.user.dto.ChangePasswordRequest;
-import com.iroff.supportlab.application.user.dto.ChangePasswordResponse;
-import com.iroff.supportlab.application.user.dto.vo.SendChangePasswordEmailResult;
 import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
 import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
-import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
+import com.iroff.supportlab.domain.auth.port.out.VerificationCodeRepository;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
-import com.iroff.supportlab.domain.common.port.in.exception.ErrorInfo;
-import com.iroff.supportlab.domain.email.port.in.exception.EmailError;
-import com.iroff.supportlab.domain.email.port.out.SendEmailPort;
 import com.iroff.supportlab.domain.user.model.User;
 import com.iroff.supportlab.domain.user.port.in.ChangePasswordUseCase;
+import com.iroff.supportlab.domain.user.port.in.exception.UserError;
 import com.iroff.supportlab.domain.user.port.out.UserRepository;
 
+import jakarta.persistence.OptimisticLockException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChangePasswordInteractor implements ChangePasswordUseCase {
 
-	private static final String SUBJECT = "테스트용 이메일 제목입니다.";
-	private static final String CONTENT = "테스트용 이메일입니다.";
-	private final SendEmailPort sendEmailPort;
 	private final UserRepository userRepository;
-	private final VerificationStateRepository verificationStateRepository;
+	private final VerificationCodeRepository verificationCodeRepository;
+	private final PasswordEncoder passwordEncoder;
 
+	@Transactional
 	@Override
-	public ChangePasswordResponse changePassword(ChangePasswordRequest request) {
-		String email = request.email();
-		String name = request.name();
-		String phone = request.phone();
-		Optional<User> user = userRepository.findByPhone(phone);
+	public void changePassword(ChangePasswordRequest request) {
+		String token = request.token();
+		String password = request.password();
+		validatePassword(password);
 
-		checkCondition(verificationStateRepository.isVerified(VerificationType.FIND_PASSWORD_VERIFIED, phone),
-			AuthError.VERIFY_CODE_FAILED);
-		verificationStateRepository.remove(VerificationType.FIND_PASSWORD_VERIFIED, phone);
+		Long userId = verificationCodeRepository.find(VerificationType.RESET_PASSWORD, token)
+			.orElseThrow(() -> new DomainException(AuthError.EXPIRED_TOKEN))
+			.transform(Long::parseLong);
+		verificationCodeRepository.remove(VerificationType.RESET_PASSWORD, token);
 
-		log.info("email: {}, name: {}, phone: {}", email, name, phone);
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new DomainException(UserError.USER_NOT_FOUND));
 
+		String newPassword = passwordEncoder.encode(password);
 		try {
-			if (user.isPresent() && user.get().getName().equals(name) && user.get().getEmail().equals(email)) {
-				sendEmailPort.sendEmail(email, SUBJECT, CONTENT);
-			}
-		} catch (Exception e) {
-			throw new DomainException(EmailError.SEND_EMAIL_FAILED);
-		}
-
-		return new ChangePasswordResponse(SendChangePasswordEmailResult.SUCCESS.getMessage());
-	}
-
-	private void checkCondition(boolean condition, ErrorInfo error) {
-		if (!condition) {
-			throw new DomainException(error);
+			user.changePassword(newPassword);
+		} catch (OptimisticLockException e) {
+			throw new DomainException(UserError.PASSWORD_ALREADY_CHANGED);
 		}
 	}
 }
