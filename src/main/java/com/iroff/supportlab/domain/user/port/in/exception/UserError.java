@@ -15,7 +15,9 @@ public enum UserError implements ErrorInfo {
 	VERIFICATION_FAILED("휴대폰 인증을 먼저 진행해주세요."),
 	TERMS_OF_SERVICE_AGREE_IS_NECCESSARY("이용 약관에 동의해야 합니다."),
 	PRIVACY_POLICY_AGREE_IS_NECCESARY("개인정보 수집 및 이용에 동의해야 합니다."),
-	INVALID_MARKETING_AGREE("마케팅 수신 동의 여부는 필수입니다.");
+	INVALID_MARKETING_AGREE("마케팅 수신 동의 여부는 필수입니다."),
+	USER_NOT_FOUND("존재하지 않는 사용자입니다."),
+	PASSWORD_ALREADY_CHANGED("다른 곳에서 비밀번호가 바뀌어 요청이 취소되었습니다.");
 
 	private final String desc;
 
