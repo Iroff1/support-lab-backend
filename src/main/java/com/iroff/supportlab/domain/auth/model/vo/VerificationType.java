@@ -9,7 +9,8 @@ public enum VerificationType {
 	FIND_PASSWORD_CODE("findPasswordCode"),
 	SIGN_UP_VERIFIED("signupVerified"),
 	FIND_EMAIL_VERIFIED("findEmailVerified"),
-	FIND_PASSWORD_VERIFIED("findPasswordVerified");
+	FIND_PASSWORD_VERIFIED("findPasswordVerified"),
+	RESET_PASSWORD("resetPassword");
 
 	private final String value;
 
