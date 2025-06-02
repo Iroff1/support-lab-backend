@@ -1,4 +1,4 @@
-package com.iroff.supportlab.framework.config.common;
+package com.iroff.supportlab.framework.config.db;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
