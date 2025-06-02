@@ -34,7 +34,7 @@ public class SendCodeInteractor implements SendCodeUseCase {
 		String phone = request.phone();
 		String code = smsCodeGenerator.generateCode();
 		smsClient.sendCode(phone, code);
-		verificationCodeRepository.save(type, code, phone, Duration.ofMinutes(LIMIT));
+		verificationCodeRepository.save(type, phone, code, Duration.ofMinutes(LIMIT));
 	}
 
 	@Override

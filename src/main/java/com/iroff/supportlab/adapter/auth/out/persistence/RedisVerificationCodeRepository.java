@@ -18,7 +18,7 @@ public class RedisVerificationCodeRepository implements VerificationCodeReposito
 	private final StringRedisTemplate redis;
 
 	@Override
-	public void save(VerificationType type, String code, String phone, Duration ttl) {
+	public void save(VerificationType type, String phone, String code, Duration ttl) {
 		redis.opsForValue().set(type.getValue() + phone, code, ttl);
 	}
 
