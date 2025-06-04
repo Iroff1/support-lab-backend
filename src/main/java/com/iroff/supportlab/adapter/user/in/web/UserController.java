@@ -26,9 +26,12 @@ import com.iroff.supportlab.domain.user.port.in.FindEmailUseCase;
 import com.iroff.supportlab.domain.user.port.in.RequestChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "사용자", description = "사용자 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -41,6 +44,7 @@ public class UserController {
 	private final ErrorStatusResolver errorStatusResolver;
 	private final ChangePasswordUseCase changePasswordUseCase;
 
+	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@PostMapping("/sign-up")
 	public ResponseEntity<SignUpUserResponse> signUp(
 		@Valid @RequestBody SignUpUserRequest request
@@ -55,6 +59,7 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "이메일 찾기", description = "이름과 휴대폰 번호로 이메일을 찾습니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@GetMapping("/email")
 	public ResponseEntity<FindEmailResponse> findEmail(
 		@Valid FindEmailRequest request
@@ -68,6 +73,7 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "비밀번호 변경 요청", description = "비밀번호 변경을 위한 토큰을 발급받습니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@PostMapping("/password")
 	public ResponseEntity<RequestChangePasswordResponse> requestChangePassword(
 		@Valid @RequestBody RequestChangePasswordRequest request
@@ -81,6 +87,7 @@ public class UserController {
 		}
 	}
 
+	@Operation(summary = "비밀번호 변경", description = "발급받은 토큰으로 비밀번호를 변경합니다.")
 	@PatchMapping("/password")
 	public ResponseEntity<Void> changePassword(
 		@Valid @RequestBody ChangePasswordRequest request

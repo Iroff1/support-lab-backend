@@ -39,7 +39,7 @@ public class VerifyCodeInteractor implements VerifyCodeUseCase {
 
 		VerificationType verifiedType = switch (type) {
 			case SIGN_UP_CODE -> VerificationType.SIGN_UP_VERIFIED;
-			case FIND_EMAIL -> VerificationType.FIND_EMAIL_VERIFIED;
+			case FIND_EMAIL_CODE -> VerificationType.FIND_EMAIL_VERIFIED;
 			case FIND_PASSWORD_CODE -> VerificationType.FIND_PASSWORD_VERIFIED;
 			default -> throw new DomainException(AuthError.INVALID_REQUEST);
 		};
