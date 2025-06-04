@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatus;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
 
-@Component
 public class UserErrorStatus implements ErrorStatus {
 	private final Map<String, HttpStatus> errorMap = new HashMap<>();
 
@@ -27,6 +25,8 @@ public class UserErrorStatus implements ErrorStatus {
 		errorMap.put(UserError.TERMS_OF_SERVICE_AGREE_IS_NECCESSARY.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.PRIVACY_POLICY_AGREE_IS_NECCESARY.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.VERIFICATION_FAILED.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(UserError.USER_NOT_FOUND.getCode(), HttpStatus.NOT_FOUND);
+		errorMap.put(UserError.PASSWORD_ALREADY_CHANGED.getCode(), HttpStatus.CONFLICT);
 	}
 
 	@Override

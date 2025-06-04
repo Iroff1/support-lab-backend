@@ -18,4 +18,6 @@ public interface User extends BaseTime {
 	Boolean getPrivacyPolicyAgreed();
 
 	Boolean getMarketingAgreed();
+
+	void changePassword(String password);
 }
