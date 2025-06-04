@@ -20,10 +20,13 @@ import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeUseCase;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "인증", description = "인증 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -33,6 +36,7 @@ public class AuthController {
 	private final LoginUseCase loginUseCase;
 	private final ErrorStatusResolver errorStatusResolver;
 
+	@Operation(summary = "인증 코드 발송", description = "휴대폰 번호로 인증 코드를 발송합니다. 회원가입, 이메일 찾기, 비밀번호 찾기에 사용됩니다.")
 	@PostMapping("/send-code")
 	public ResponseEntity<Void> sendCode(
 		@Valid @RequestBody SendCodeRequest request,
@@ -54,6 +58,7 @@ public class AuthController {
 		}
 	}
 
+	@Operation(summary = "인증 코드 검증", description = "발송된 인증 코드를 검증합니다.")
 	@PostMapping("/verify-code")
 	public ResponseEntity<VerifyCodeResponse> verifyCode(
 		@Valid @RequestBody VerifyCodeRequest request
@@ -67,6 +72,7 @@ public class AuthController {
 		}
 	}
 
+	@Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인합니다. 성공 시 JWT 토큰이 발급됩니다.")
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
 		try {
