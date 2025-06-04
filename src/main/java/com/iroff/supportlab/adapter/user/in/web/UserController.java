@@ -87,7 +87,7 @@ public class UserController {
 	) {
 		try {
 			changePasswordUseCase.changePassword(request);
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.ok().build();
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
 			throw new APIException(e, errorStatus);
