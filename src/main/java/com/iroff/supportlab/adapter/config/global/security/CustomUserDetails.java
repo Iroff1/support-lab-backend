@@ -11,7 +11,7 @@ import com.iroff.supportlab.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 	private final User user;
 
 	public User getUser() {

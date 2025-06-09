@@ -2,7 +2,6 @@ package com.iroff.supportlab.adapter.config.global.security;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		"/v3/api-docs"
 	};
 	private final JwtTokenProvider jwtTokenProvider;
+	private final CustomUserDetailsService customUserDetailsService;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -47,10 +47,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			if (jwtTokenProvider.validateToken(token)) {
 				// 3. 사용자 ID 추출
 				Long userId = jwtTokenProvider.getUserId(token);
+				CustomUserDetails userDetails = customUserDetailsService.loadUserById(userId);
 
 				// 4. 인증 객체 생성 및 SecurityContext에 등록
 				UsernamePasswordAuthenticationToken authentication =
-					new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+					new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
