@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,6 +18,7 @@ public class SecurityConfig {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final CustomUserDetailsService customUserDetailsService;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -24,13 +26,15 @@ public class SecurityConfig {
 			.authorizeHttpRequests(requests -> requests
 				.requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/v3/**").permitAll()
 				.requestMatchers("/h2-console/**").permitAll()
-				.requestMatchers("/api/users/sign-up", "api/users/email", "api/users/password").permitAll()
+				.requestMatchers("/api/users/sign-up", "/api/users/email", "/api/users/password").permitAll()
 				.requestMatchers("/api/auth/login", "/api/auth/send-code", "/api/auth/verify-code").permitAll()
 				.anyRequest().authenticated());
 
 		http
 			.csrf(csrf -> csrf.disable())
 			.formLogin(form -> form.disable())
+			.sessionManagement(sm ->
+				sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.httpBasic(httpBasic -> httpBasic.disable());
 
 		http
@@ -39,12 +43,14 @@ public class SecurityConfig {
 			);
 
 		http
-			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService),
 				UsernamePasswordAuthenticationFilter.class);
 
-		// todo: h2-consoel 사용을 위한 코드, 배포시 삭제
-		http.headers(headersConfigurer -> headersConfigurer
-			.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+		// todo: h2-console 사용을 위한 코드, 배포시 삭제
+		if (System.getProperty("spring.profiles.active", "").equals("local")) {
+			http.headers(headersConfigurer -> headersConfigurer
+				.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+		}
 
 		return http.build();
 	}

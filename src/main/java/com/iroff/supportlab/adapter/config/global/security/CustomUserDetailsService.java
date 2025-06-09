@@ -23,4 +23,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 			.orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
 		return new CustomUserDetails(user);
 	}
+
+	public CustomUserDetails loadUserById(Long userId) {
+		User user = userJpaRepository.findById(userId)
+			.orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
+		return new CustomUserDetails(user);
+	}
 }
