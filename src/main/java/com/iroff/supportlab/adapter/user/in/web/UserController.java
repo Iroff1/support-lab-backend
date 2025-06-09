@@ -31,6 +31,7 @@ import com.iroff.supportlab.domain.user.port.in.RequestChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -106,6 +107,7 @@ public class UserController {
 		}
 	}
 
+	@SecurityRequirement(name = "bearerAuth")
 	@Operation(summary = "사용자 정보 조회", description = "액세스 토큰을 통해 사용자 정보를 조회합니다.")
 	@GetMapping("/me")
 	public ResponseEntity<GetUserInfoResponse> getUserInfo(

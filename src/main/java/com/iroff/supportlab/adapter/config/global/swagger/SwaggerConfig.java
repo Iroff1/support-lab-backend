@@ -15,12 +15,20 @@ import org.springframework.http.ResponseEntity;
 import com.iroff.supportlab.adapter.common.in.web.dto.ResponseDTO;
 
 import io.swagger.v3.core.converter.ModelConverters;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 
 @Configuration
+@SecurityScheme(
+	name = "bearerAuth",
+	type = SecuritySchemeType.HTTP,
+	scheme = "bearer",
+	bearerFormat = "JWT"
+)
 public class SwaggerConfig {
 	@Bean
 	public OpenAPI openAPI() {
