@@ -9,28 +9,10 @@ services:
     restart: always
     ports:
       - "8080:8080"
+    env_file:
+      - ../.env.prod
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
       - TZ=Asia/Seoul
-      - SMS_PROVIDER=${SMS_PROVIDER}
-      - SMS_TEMPLATE_AUTH=${SMS_TEMPLATE_AUTH}
-      - SMS_LIMIT_AMOUNT=${SMS_LIMIT_AMOUNT}
-      - SMS_LIMIT_DURATION_MINUTES=${SMS_LIMIT_DURATION_MINUTES}
-      - NCP_SMS_SERVICE_ID=${NCP_SMS_SERVICE_ID}
-      - NCP_SMS_API_URL=${NCP_SMS_API_URL}
-      - NCP_ACCESS_KEY=${NCP_ACCESS_KEY}
-      - NCP_SECRET_KEY=${NCP_SECRET_KEY}
-      - NCP_COUNTRY_CODE=${NCP_COUNTRY_CODE}
-      - NCP_FROM=${NCP_FROM}
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/iroff?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
-      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATA_REDIS_PORT=6379
-      - MAIL_HOST=${MAIL_HOST}
-      - MAIL_PORT=${MAIL_PORT}
-      - MAIL_USERNAME=${MAIL_USERNAME}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
     volumes:
       - ./build/libs:/app/build/libs
     depends_on:
@@ -66,9 +48,8 @@ services:
     environment:
       - TZ=Asia/Seoul
       - MYSQL_DATABASE=iroff
-      - MYSQL_USER=${DB_USERNAME}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    env_file:
+      - ../.env.prod
     volumes:
       - mysql_data:/var/lib/mysql
     command:
@@ -100,4 +81,4 @@ volumes:
 
 networks:
   app-network:
-    driver: bridge 
+    driver: bridge
