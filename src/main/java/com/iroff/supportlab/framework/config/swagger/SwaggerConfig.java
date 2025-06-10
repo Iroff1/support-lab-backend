@@ -1,4 +1,4 @@
-package com.iroff.supportlab.adapter.config.global.swagger;
+package com.iroff.supportlab.framework.config.swagger;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;

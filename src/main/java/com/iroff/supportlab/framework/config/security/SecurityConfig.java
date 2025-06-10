@@ -1,4 +1,4 @@
-package com.iroff.supportlab.adapter.config.global.security;
+package com.iroff.supportlab.framework.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +26,8 @@ public class SecurityConfig {
 			.authorizeHttpRequests(requests -> requests
 				.requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/v3/**").permitAll()
 				.requestMatchers("/h2-console/**").permitAll()
-				.requestMatchers("/api/users/sign-up", "/api/users/email", "/api/users/password").permitAll()
+				.requestMatchers("/api/users/sign-up", "/api/users/email", "/api/users/password",
+					"/api/users/existence").permitAll()
 				.requestMatchers("/api/auth/login", "/api/auth/send-code", "/api/auth/verify-code").permitAll()
 				.anyRequest().authenticated());
 
