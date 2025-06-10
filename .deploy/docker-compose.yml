@@ -14,7 +14,7 @@ services:
     environment:
       - TZ=Asia/Seoul
     volumes:
-      - ./build/libs:/app/build/libs
+      - ../build/libs:/app/build/libs
     depends_on:
       - db
       - redis
