@@ -46,3 +46,6 @@ logging:
     org.hibernate: INFO
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
+
+web:
+  host: ${WEB_HOST}
