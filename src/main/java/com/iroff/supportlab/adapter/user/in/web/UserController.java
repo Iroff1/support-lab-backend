@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.iroff.supportlab.adapter.common.in.web.exception.APIException;
 import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatus;
 import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatusResolver;
-import com.iroff.supportlab.adapter.config.global.security.CustomUserDetails;
 import com.iroff.supportlab.application.user.dto.ChangePasswordRequest;
+import com.iroff.supportlab.application.user.dto.CheckEmailExistsRequest;
+import com.iroff.supportlab.application.user.dto.CheckEmailExistsResponse;
 import com.iroff.supportlab.application.user.dto.FindEmailRequest;
 import com.iroff.supportlab.application.user.dto.FindEmailResponse;
 import com.iroff.supportlab.application.user.dto.GetUserInfoResponse;
@@ -25,10 +26,12 @@ import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.port.in.ChangePasswordUseCase;
+import com.iroff.supportlab.domain.user.port.in.CheckEmailExistsUseCase;
 import com.iroff.supportlab.domain.user.port.in.FindEmailUseCase;
 import com.iroff.supportlab.domain.user.port.in.GetUserInfoUseCase;
 import com.iroff.supportlab.domain.user.port.in.RequestChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
+import com.iroff.supportlab.framework.config.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -49,6 +52,7 @@ public class UserController {
 	private final ErrorStatusResolver errorStatusResolver;
 	private final ChangePasswordUseCase changePasswordUseCase;
 	private final GetUserInfoUseCase getUserInfoUseCase;
+	private final CheckEmailExistsUseCase checkEmailExistsUseCase;
 
 	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@PostMapping("/sign-up")
@@ -116,6 +120,21 @@ public class UserController {
 		try {
 			Long userId = user.getUser().getId();
 			GetUserInfoResponse response = getUserInfoUseCase.getUserInfo(userId);
+			return ResponseEntity.ok().body(response);
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@Operation(summary = "이메일 중복 체크", description = "이미 가입된 이메일인지 확인합니다.")
+	@GetMapping("/existence")
+	public ResponseEntity<CheckEmailExistsResponse> checkEmailExists(
+		@Valid CheckEmailExistsRequest request
+	) {
+		try {
+			String email = request.email();
+			CheckEmailExistsResponse response = checkEmailExistsUseCase.checkEmailExists(email);
 			return ResponseEntity.ok().body(response);
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
