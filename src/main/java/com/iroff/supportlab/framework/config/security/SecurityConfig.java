@@ -2,6 +2,7 @@ package com.iroff.supportlab.framework.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,6 +26,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(requests -> requests
 				.requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/api/v3/**").permitAll()
+				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/h2-console/**").permitAll()
 				.requestMatchers("/api/users/sign-up", "/api/users/email", "/api/users/password",
 					"/api/users/existence").permitAll()
