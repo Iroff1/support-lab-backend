@@ -31,6 +31,11 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
+	public void deleteById(Long id) {
+		userJpaRepository.deleteById(id);
+	}
+
+	@Override
 	public void save(User user) {
 		userJpaRepository.save(user);
 	}
