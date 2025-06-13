@@ -55,7 +55,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --skip-character-set-client-handshake
-      - --default-time-zone=+09:00
+      - --default-time-zone=Asia/Seoul
     networks:
       - app-network
 
