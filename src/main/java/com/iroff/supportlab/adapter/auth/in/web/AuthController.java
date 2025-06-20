@@ -12,11 +12,15 @@ import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatus;
 import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatusResolver;
 import com.iroff.supportlab.application.auth.dto.LoginRequest;
 import com.iroff.supportlab.application.auth.dto.LoginResponse;
+import com.iroff.supportlab.application.auth.dto.SendCodeEmailRequest;
 import com.iroff.supportlab.application.auth.dto.SendCodeRequest;
+import com.iroff.supportlab.application.auth.dto.VerifyCodeEmailRequest;
 import com.iroff.supportlab.application.auth.dto.VerifyCodeRequest;
 import com.iroff.supportlab.application.auth.dto.VerifyCodeResponse;
 import com.iroff.supportlab.domain.auth.port.in.LoginUseCase;
+import com.iroff.supportlab.domain.auth.port.in.SendCodeEmailUseCase;
 import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
+import com.iroff.supportlab.domain.auth.port.in.VerifyCodeEmailUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeUseCase;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 
@@ -33,10 +37,12 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 	private final SendCodeUseCase sendCodeUseCase;
 	private final VerifyCodeUseCase verifyCodeUseCase;
+	private final SendCodeEmailUseCase sendCodeEmailUseCase;
+	private final VerifyCodeEmailUseCase verifyCodeEmailUseCase;
 	private final LoginUseCase loginUseCase;
 	private final ErrorStatusResolver errorStatusResolver;
 
-	@Operation(summary = "인증 코드 발송", description = "휴대폰 번호로 인증 코드를 발송합니다. 회원가입, 이메일 찾기, 비밀번호 찾기에 사용됩니다.")
+	@Operation(summary = "휴대폰 번호 인증 코드 발송", description = "휴대폰 번호 인증 코드를 발송합니다. 회원가입, 이메일 찾기, 비밀번호 찾기에 사용됩니다.")
 	@PostMapping("/send-code")
 	public ResponseEntity<Void> sendCode(
 		@Valid @RequestBody SendCodeRequest request,
@@ -58,13 +64,49 @@ public class AuthController {
 		}
 	}
 
-	@Operation(summary = "인증 코드 검증", description = "발송된 인증 코드를 검증합니다.")
+	@Operation(summary = "휴대폰 번호 인증 코드 검증", description = "휴대폰으로 발송된 인증 코드를 검증합니다.")
 	@PostMapping("/verify-code")
 	public ResponseEntity<VerifyCodeResponse> verifyCode(
 		@Valid @RequestBody VerifyCodeRequest request
 	) {
 		try {
 			VerifyCodeResponse response = verifyCodeUseCase.verifyCode(request);
+			return ResponseEntity.ok().body(response);
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@Operation(summary = "이메일 검증 인증 코드 발송", description = "이메일로 인증 코드를 발송합니다. 실제 이메일이 존재하는 지 검증하는 데 사용됩니다.")
+	@PostMapping("/send-code-email")
+	public ResponseEntity<Void> sendCodeEmail(
+		@Valid @RequestBody SendCodeEmailRequest request,
+		HttpServletRequest servletRequest
+	) {
+		String xff = servletRequest.getHeader("X-Forwarded-For");
+		String ip;
+		if (xff != null && !xff.isBlank()) {
+			ip = xff.split(",")[0].trim();
+		} else {
+			ip = servletRequest.getRemoteAddr();
+		}
+		try {
+			sendCodeEmailUseCase.sendCodeEmail(request, ip);
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@Operation(summary = "이메일 검증 인증 코드 검증", description = "이메일로 발송된 인증 코드를 검증합니다.")
+	@PostMapping("verify-code-email")
+	public ResponseEntity<VerifyCodeResponse> verifyCodeEmail(
+		@Valid @RequestBody VerifyCodeEmailRequest request
+	) {
+		try {
+			VerifyCodeResponse response = verifyCodeEmailUseCase.verifyCodeEmail(request);
 			return ResponseEntity.ok().body(response);
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());

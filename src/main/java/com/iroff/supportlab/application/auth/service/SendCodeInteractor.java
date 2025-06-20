@@ -8,8 +8,8 @@ import com.iroff.supportlab.application.auth.dto.SendCodeRequest;
 import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
 import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
+import com.iroff.supportlab.domain.auth.port.out.RateLimiter;
 import com.iroff.supportlab.domain.auth.port.out.SmsClient;
-import com.iroff.supportlab.domain.auth.port.out.SmsRateLimiter;
 import com.iroff.supportlab.domain.auth.port.out.VerificationCodeRepository;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 
@@ -21,18 +21,18 @@ public class SendCodeInteractor implements SendCodeUseCase {
 
 	private static final int LIMIT = 5;
 	private final SmsClient smsClient;
-	private final SmsCodeGenerator smsCodeGenerator;
-	private final SmsRateLimiter smsRateLimiter;
+	private final VerifyCodeGenerator verifyCodeGenerator;
+	private final RateLimiter rateLimiter;
 	private final VerificationCodeRepository verificationCodeRepository;
 
 	@Override
 	public void sendCode(SendCodeRequest request, String ip) {
-		if (!smsRateLimiter.tryAcquire(ip)) {
+		if (!rateLimiter.tryAcquire(ip)) {
 			throw new DomainException(AuthError.TOO_MANY_REQUESTS);
 		}
 		VerificationType type = request.type();
 		String phone = request.phone();
-		String code = smsCodeGenerator.generateCode();
+		String code = verifyCodeGenerator.generateCode();
 		smsClient.sendCode(phone, code);
 		verificationCodeRepository.save(type, phone, code, Duration.ofMinutes(LIMIT));
 	}

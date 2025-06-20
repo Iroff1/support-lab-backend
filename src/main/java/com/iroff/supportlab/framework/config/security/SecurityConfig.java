@@ -34,7 +34,8 @@ public class SecurityConfig {
 				.requestMatchers("/h2-console/**").permitAll()
 				.requestMatchers("/api/users/sign-up", "/api/users/email", "/api/users/password",
 					"/api/users/existence").permitAll()
-				.requestMatchers("/api/auth/login", "/api/auth/send-code", "/api/auth/verify-code").permitAll()
+				.requestMatchers("/api/auth/login", "/api/auth/send-code", "/api/auth/verify-code",
+					"/api/auth/send-code-email", "/api/auth/verify-code-email").permitAll()
 				.anyRequest().authenticated());
 
 		http
