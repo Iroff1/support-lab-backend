@@ -38,6 +38,8 @@ spring:
           auth: true
           starttls:
             enable: true
+    code:
+      subject: ${MAIL_CODE_SUBJECT}
 
 logging:
   level:
