@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import com.iroff.supportlab.domain.user.model.Role;
 
+import lombok.Builder;
+
+@Builder
 public record GetUserInfoResponse(
 	String name,
 	String email,

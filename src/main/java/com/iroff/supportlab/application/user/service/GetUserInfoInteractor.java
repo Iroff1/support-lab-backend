@@ -21,16 +21,17 @@ public class GetUserInfoInteractor implements GetUserInfoUseCase {
 	public GetUserInfoResponse getUserInfo(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new DomainException(UserError.USER_NOT_FOUND));
-		return new GetUserInfoResponse(
-			user.getName(),
-			user.getEmail(),
-			user.getPhone(),
-			user.getRole(),
-			user.getTermsOfServiceAgreed(),
-			user.getPrivacyPolicyAgreed(),
-			user.getMarketingAgreed(),
-			user.getCreatedAt(),
-			user.getModifiedAt()
-		);
+
+		return GetUserInfoResponse.builder()
+			.name(user.getName())
+			.email(user.getEmail())
+			.phone(user.getPhone())
+			.role(user.getRole())
+			.termsOfServiceAgreed(user.getTermsOfServiceAgreed())
+			.privacyPolicyAgreed(user.getPrivacyPolicyAgreed())
+			.marketingAgreed(user.getMarketingAgreed())
+			.createdAt(user.getCreatedAt())
+			.modifiedAt(user.getModifiedAt())
+			.build();
 	}
 }
