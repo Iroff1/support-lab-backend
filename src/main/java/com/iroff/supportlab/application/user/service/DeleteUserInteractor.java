@@ -1,5 +1,6 @@
 package com.iroff.supportlab.application.user.service;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +33,12 @@ public class DeleteUserInteractor implements DeleteUserUseCase {
 			.orElseThrow(() -> new DomainException(UserError.USER_NOT_FOUND));
 		checkCondition(passwordEncoder.matches(password, user.getPassword()), AuthError.INVALID_PASSWORD);
 		try {
-			userRepository.deleteById(userId);
-		} catch (Exception e) {
+			if (userRepository.existsById(userId)) {
+				userRepository.deleteById(userId);
+			} else {
+				throw new DomainException(UserError.USER_NOT_FOUND);
+			}
+		} catch (DataAccessException e) {
 			throw new DomainException(UserError.DELETE_USER_FAILED);
 		}
 	}
