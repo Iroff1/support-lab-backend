@@ -61,11 +61,19 @@ public class UserEntity extends BaseTimeEntity implements User {
 	@Column(nullable = false)
 	private Boolean marketingAgreed;
 
+	@Column(nullable = false)
+	private Boolean active;
+
 	@Version
 	private Long version;
 
 	@Override
 	public void changePassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public void changeActive(Boolean active) {
+		this.active = active;
 	}
 }

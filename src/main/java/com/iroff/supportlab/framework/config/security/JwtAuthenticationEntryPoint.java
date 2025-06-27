@@ -1,4 +1,4 @@
-package com.iroff.supportlab.adapter.config.global.security;
+package com.iroff.supportlab.framework.config.security;
 
 import java.io.IOException;
 

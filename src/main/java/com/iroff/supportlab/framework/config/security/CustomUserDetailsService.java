@@ -1,4 +1,4 @@
-package com.iroff.supportlab.adapter.config.global.security;
+package com.iroff.supportlab.framework.config.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +20,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = userJpaRepository.findByEmail(email)
+			.orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
+		return new CustomUserDetails(user);
+	}
+
+	public CustomUserDetails loadUserById(Long userId) {
+		User user = userJpaRepository.findById(userId)
 			.orElseThrow(() -> new UsernameNotFoundException("해당 사용자가 없습니다."));
 		return new CustomUserDetails(user);
 	}

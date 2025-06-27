@@ -3,7 +3,10 @@ package com.iroff.supportlab.adapter.user.in.web;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,19 +17,28 @@ import com.iroff.supportlab.adapter.common.in.web.exception.APIException;
 import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatus;
 import com.iroff.supportlab.adapter.common.in.web.exception.ErrorStatusResolver;
 import com.iroff.supportlab.application.user.dto.ChangePasswordRequest;
+import com.iroff.supportlab.application.user.dto.CheckEmailExistsRequest;
+import com.iroff.supportlab.application.user.dto.CheckEmailExistsResponse;
+import com.iroff.supportlab.application.user.dto.DeleteUserRequest;
 import com.iroff.supportlab.application.user.dto.FindEmailRequest;
 import com.iroff.supportlab.application.user.dto.FindEmailResponse;
+import com.iroff.supportlab.application.user.dto.GetUserInfoResponse;
 import com.iroff.supportlab.application.user.dto.RequestChangePasswordRequest;
 import com.iroff.supportlab.application.user.dto.RequestChangePasswordResponse;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.port.in.ChangePasswordUseCase;
+import com.iroff.supportlab.domain.user.port.in.CheckEmailExistsUseCase;
+import com.iroff.supportlab.domain.user.port.in.DeleteUserUseCase;
 import com.iroff.supportlab.domain.user.port.in.FindEmailUseCase;
+import com.iroff.supportlab.domain.user.port.in.GetUserInfoUseCase;
 import com.iroff.supportlab.domain.user.port.in.RequestChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
+import com.iroff.supportlab.framework.config.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +55,9 @@ public class UserController {
 	private final RequestChangePasswordUseCase requestChangePasswordUseCase;
 	private final ErrorStatusResolver errorStatusResolver;
 	private final ChangePasswordUseCase changePasswordUseCase;
+	private final GetUserInfoUseCase getUserInfoUseCase;
+	private final DeleteUserUseCase deleteUserUseCase;
+	private final CheckEmailExistsUseCase checkEmailExistsUseCase;
 
 	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@PostMapping("/sign-up")
@@ -62,7 +77,7 @@ public class UserController {
 	@Operation(summary = "이메일 찾기", description = "이름과 휴대폰 번호로 이메일을 찾습니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@GetMapping("/email")
 	public ResponseEntity<FindEmailResponse> findEmail(
-		@Valid FindEmailRequest request
+		@Valid @ModelAttribute FindEmailRequest request
 	) {
 		try {
 			FindEmailResponse response = findEmailUseCase.findEmail(request);
@@ -95,6 +110,54 @@ public class UserController {
 		try {
 			changePasswordUseCase.changePassword(request);
 			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(summary = "사용자 정보 조회", description = "액세스 토큰을 통해 사용자 정보를 조회합니다.")
+	@GetMapping("/me")
+	public ResponseEntity<GetUserInfoResponse> getUserInfo(
+		@AuthenticationPrincipal CustomUserDetails user
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			GetUserInfoResponse response = getUserInfoUseCase.getUserInfo(userId);
+			return ResponseEntity.ok().body(response);
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(summary = "회원탈퇴", description = "액세스 토큰을 통해 회원탈퇴를 진행합니다.")
+	@DeleteMapping("/me")
+	public ResponseEntity<Void> deleteUser(
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody DeleteUserRequest request
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			deleteUserUseCase.deleteUser(userId, request);
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@Operation(summary = "이메일 중복 체크", description = "이미 가입된 이메일인지 확인합니다.")
+	@GetMapping("/existence")
+	public ResponseEntity<CheckEmailExistsResponse> checkEmailExists(
+		@Valid @ModelAttribute CheckEmailExistsRequest request
+	) {
+		try {
+			String email = request.email();
+			CheckEmailExistsResponse response = checkEmailExistsUseCase.checkEmailExists(email);
+			return ResponseEntity.ok().body(response);
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
 			throw new APIException(e, errorStatus);

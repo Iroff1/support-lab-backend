@@ -1,5 +1,5 @@
 package com.iroff.supportlab.domain.auth.port.out;
 
-public interface SmsRateLimiter {
+public interface RateLimiter {
 	boolean tryAcquire(String key);
 }

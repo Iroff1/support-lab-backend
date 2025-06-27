@@ -9,9 +9,9 @@ public record ResponseDTO<T>(
 	String code,
 	String status,
 	String message,
-	T data
+	T body
 ) {
-	public ResponseDTO(ResponseCode code, T data) {
-		this(code.getCode(), code.getStatus(), code.getMessage(), data);
+	public ResponseDTO(ResponseCode code, T body) {
+		this(code.getCode(), code.getStatus(), code.getMessage(), body);
 	}
 }

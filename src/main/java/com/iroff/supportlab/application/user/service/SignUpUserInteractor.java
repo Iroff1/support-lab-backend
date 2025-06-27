@@ -55,6 +55,7 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 			.name(request.name())
 			.phone(request.phone())
 			.role(Role.USER)
+			.active(true)
 			.termsOfServiceAgreed(request.termsOfServiceAgreed())
 			.privacyPolicyAgreed(request.privacyPolicyAgreed())
 			.marketingAgreed(request.marketingAgreed())
