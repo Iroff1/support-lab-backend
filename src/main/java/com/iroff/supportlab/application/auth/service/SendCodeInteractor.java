@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SendCodeInteractor implements SendCodeUseCase {
 
-	private static final int LIMIT = 5;
+	private static final int MAX_TRY_LIMIT = 5;
 	private final SmsClient smsClient;
 	private final VerifyCodeGenerator verifyCodeGenerator;
 	private final RateLimiter rateLimiter;
@@ -34,7 +34,7 @@ public class SendCodeInteractor implements SendCodeUseCase {
 		String phone = request.phone();
 		String code = verifyCodeGenerator.generateCode();
 		smsClient.sendCode(phone, code);
-		verificationCodeRepository.save(type, phone, code, Duration.ofMinutes(LIMIT));
+		verificationCodeRepository.save(type, phone, code, Duration.ofMinutes(MAX_TRY_LIMIT));
 	}
 
 	@Override
