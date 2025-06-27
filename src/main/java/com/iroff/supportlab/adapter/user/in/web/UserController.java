@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,7 +77,7 @@ public class UserController {
 	@Operation(summary = "이메일 찾기", description = "이름과 휴대폰 번호로 이메일을 찾습니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@GetMapping("/email")
 	public ResponseEntity<FindEmailResponse> findEmail(
-		@Valid FindEmailRequest request
+		@Valid @ModelAttribute FindEmailRequest request
 	) {
 		try {
 			FindEmailResponse response = findEmailUseCase.findEmail(request);
@@ -151,7 +152,7 @@ public class UserController {
 	@Operation(summary = "이메일 중복 체크", description = "이미 가입된 이메일인지 확인합니다.")
 	@GetMapping("/existence")
 	public ResponseEntity<CheckEmailExistsResponse> checkEmailExists(
-		@Valid CheckEmailExistsRequest request
+		@Valid @ModelAttribute CheckEmailExistsRequest request
 	) {
 		try {
 			String email = request.email();
