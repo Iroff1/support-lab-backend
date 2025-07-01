@@ -17,7 +17,8 @@ public enum UserError implements ErrorInfo {
 	PRIVACY_POLICY_AGREE_IS_NECCESARY("개인정보 수집 및 이용에 동의해야 합니다."),
 	INVALID_MARKETING_AGREE("마케팅 수신 동의 여부는 필수입니다."),
 	USER_NOT_FOUND("존재하지 않는 사용자입니다."),
-	PASSWORD_ALREADY_CHANGED("다른 곳에서 비밀번호가 바뀌어 요청이 취소되었습니다.");
+	PASSWORD_ALREADY_CHANGED("다른 곳에서 비밀번호가 바뀌어 요청이 취소되었습니다."),
+	DELETE_USER_FAILED("이미 삭제된 사용자이거나 과정에 문제가 발생했습니다.");
 
 	private final String desc;
 

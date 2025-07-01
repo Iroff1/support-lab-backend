@@ -15,7 +15,9 @@ public enum VerificationType {
 	@Schema(description = "비밀번호 찾기 인증 코드")
 	FIND_PASSWORD_CODE("findPasswordCode"),
 
+	VERIFY_EMAIL_CODE("verifyEmailCode"),
 	SIGN_UP_VERIFIED("signupVerified"),
+	VERIFY_EMAIL_VERIFIED("verifyEmailVerified"),
 	FIND_EMAIL_VERIFIED("findEmailVerified"),
 	FIND_PASSWORD_VERIFIED("findPasswordVerified"),
 	RESET_PASSWORD("resetPassword");

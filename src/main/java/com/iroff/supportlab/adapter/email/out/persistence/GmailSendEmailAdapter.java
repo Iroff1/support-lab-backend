@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GmailSendEmailAdapter implements SendEmailPort {
 
-	private static final String SENDER = "iroff.lab";
+	private static final String SENDER = "plankit24";
 	private final JavaMailSender mailSender;
 
 	@Override

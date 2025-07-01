@@ -3,12 +3,12 @@ package com.iroff.supportlab.application.auth.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.iroff.supportlab.adapter.config.global.security.JwtTokenProvider;
 import com.iroff.supportlab.application.auth.dto.LoginRequest;
 import com.iroff.supportlab.application.auth.dto.LoginResponse;
 import com.iroff.supportlab.domain.auth.port.in.LoginUseCase;
 import com.iroff.supportlab.domain.user.model.User;
 import com.iroff.supportlab.domain.user.port.out.UserRepository;
+import com.iroff.supportlab.framework.config.security.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 

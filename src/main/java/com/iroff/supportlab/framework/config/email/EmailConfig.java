@@ -18,6 +18,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 public class EmailConfig {
 
 	private static final String TEMPLATE_PATH = "templates/email/password-reset.html";
+	@Value("${spring.mail.code.subject}")
+	private String codeSubject;
 	@Value("${spring.mail.host}")
 	private String host;
 	@Value("${spring.mail.port}")
@@ -56,5 +58,9 @@ public class EmailConfig {
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(), e.getCause());
 		}
+	}
+
+	public String getCodeSubject() {
+		return codeSubject;
 	}
 }

@@ -6,13 +6,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.iroff.supportlab.adapter.auth.out.config.SmsProperties;
-import com.iroff.supportlab.domain.auth.port.out.SmsRateLimiter;
+import com.iroff.supportlab.domain.auth.port.out.RateLimiter;
 
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class RedisRateLimiter implements SmsRateLimiter {
+public class RedisRateLimiter implements RateLimiter {
 
 	private static final String KEY_PREFIX = "sms:rate:";
 	private final SmsProperties smsProperties;

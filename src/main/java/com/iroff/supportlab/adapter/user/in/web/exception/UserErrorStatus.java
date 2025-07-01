@@ -27,6 +27,7 @@ public class UserErrorStatus implements ErrorStatus {
 		errorMap.put(UserError.VERIFICATION_FAILED.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.USER_NOT_FOUND.getCode(), HttpStatus.NOT_FOUND);
 		errorMap.put(UserError.PASSWORD_ALREADY_CHANGED.getCode(), HttpStatus.CONFLICT);
+		errorMap.put(UserError.DELETE_USER_FAILED.getCode(), HttpStatus.BAD_REQUEST);
 	}
 
 	@Override

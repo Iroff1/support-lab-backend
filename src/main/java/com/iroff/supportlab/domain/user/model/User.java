@@ -15,9 +15,15 @@ public interface User extends BaseTime {
 
 	Role getRole();
 
+	Boolean getTermsOfServiceAgreed();
+
 	Boolean getPrivacyPolicyAgreed();
 
 	Boolean getMarketingAgreed();
 
+	Boolean getActive();
+
 	void changePassword(String password);
+
+	void changeActive(Boolean active);
 }

@@ -1,4 +1,4 @@
-package com.iroff.supportlab.adapter.config.global.security;
+package com.iroff.supportlab.framework.config.security;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +11,7 @@ import com.iroff.supportlab.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 	private final User user;
 
 	public User getUser() {
