@@ -68,6 +68,11 @@ public class UserEntity extends BaseTimeEntity implements User {
 	private Long version;
 
 	@Override
+	public void changeName(String name) {
+		this.name = name;
+	}
+
+	@Override
 	public void changePassword(String password) {
 		this.password = password;
 	}

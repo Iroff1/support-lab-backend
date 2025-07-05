@@ -23,6 +23,8 @@ public interface User extends BaseTime {
 
 	Boolean getActive();
 
+	void changeName(String name);
+
 	void changePassword(String password);
 
 	void changeActive(Boolean active);
