@@ -78,6 +78,11 @@ public class UserEntity extends BaseTimeEntity implements User {
 	}
 
 	@Override
+	public void changeMarketingAgreed(Boolean agreed) {
+		this.marketingAgreed = agreed;
+	}
+
+	@Override
 	public void changeActive(Boolean active) {
 		this.active = active;
 	}

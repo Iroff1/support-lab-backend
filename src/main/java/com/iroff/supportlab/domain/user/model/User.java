@@ -27,5 +27,7 @@ public interface User extends BaseTime {
 
 	void changePassword(String password);
 
+	void changeMarketingAgreed(Boolean marketingAgreed);
+
 	void changeActive(Boolean active);
 }
