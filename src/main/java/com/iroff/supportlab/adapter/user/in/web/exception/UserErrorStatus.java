@@ -14,9 +14,10 @@ public class UserErrorStatus implements ErrorStatus {
 	public UserErrorStatus() {
 		errorMap.put(UserError.EMAIL_ALREADY_EXISTS.getCode(), HttpStatus.CONFLICT);
 		errorMap.put(UserError.PHONE_ALREADY_EXISTS.getCode(), HttpStatus.CONFLICT);
-		errorMap.put(UserError.INVALID_PASSWORD_UPPERCASE.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(UserError.INVALID_NAME.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.INVALID_EMAIL.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.INVALID_PASSWORD_LENGTH.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(UserError.INVALID_PASSWORD_UPPERCASE.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.INVALID_PASSWORD_LOWERCASE.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.INVALID_PASSWORD_NUMBER.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.INVALID_PASSWORD_SPECIAL.getCode(), HttpStatus.BAD_REQUEST);
@@ -30,6 +31,7 @@ public class UserErrorStatus implements ErrorStatus {
 		errorMap.put(UserError.DELETE_USER_FAILED.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.UPDATE_PASSWORD_FAILED.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.WRONG_PASSWORD.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(UserError.SAME_NAME_NOT_ALLOWED.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.SAME_PASSWORD_NOT_ALLOWED.getCode(), HttpStatus.BAD_REQUEST);
 	}
 
