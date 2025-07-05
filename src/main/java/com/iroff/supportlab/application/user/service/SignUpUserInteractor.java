@@ -15,6 +15,7 @@ import com.iroff.supportlab.domain.user.model.Role;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
 import com.iroff.supportlab.domain.user.port.out.UserRepository;
+import com.iroff.supportlab.domain.user.util.NameValidator;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 	public SignUpUserResponse signUp(SignUpUserRequest request) {
 		checkCondition(!userRepository.existsByEmail(request.email()), UserError.EMAIL_ALREADY_EXISTS);
 		checkCondition(!userRepository.existsByPhone(request.phone()), UserError.PHONE_ALREADY_EXISTS);
+		checkCondition(NameValidator.isValidName(request.name()), UserError.INVALID_NAME);
 		checkCondition(verificationStateRepository.isVerified(VerificationType.SIGN_UP_VERIFIED, request.phone()),
 			UserError.VERIFICATION_FAILED);
 		checkCondition(request.termsOfServiceAgreed() != null && request.termsOfServiceAgreed(),
