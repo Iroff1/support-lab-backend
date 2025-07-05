@@ -172,7 +172,7 @@ public class UserController {
 
 	@SecurityRequirement(name = "bearerAuth")
 	@Operation(description = "비밀번호 수정", summary = "기존 비밀번호에서 새로운 비밀번호로 수정합니다.")
-	@PatchMapping("/update/password")
+	@PatchMapping("/me/password")
 	public ResponseEntity<Void> updatePassword(
 		@AuthenticationPrincipal CustomUserDetails user,
 		@Valid @RequestBody UpdatePasswordRequest request
@@ -189,7 +189,7 @@ public class UserController {
 
 	@SecurityRequirement(name = "bearerAuth")
 	@Operation(description = "사용자 이름 수정", summary = "사용자의 이름을 수정합니다.")
-	@PatchMapping("/update/name")
+	@PatchMapping("/me/name")
 	public ResponseEntity<Void> updateName(
 		@AuthenticationPrincipal CustomUserDetails user,
 		@Valid @RequestBody UpdateNameRequest request
