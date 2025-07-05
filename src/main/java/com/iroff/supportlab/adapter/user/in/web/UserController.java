@@ -27,6 +27,7 @@ import com.iroff.supportlab.application.user.dto.RequestChangePasswordRequest;
 import com.iroff.supportlab.application.user.dto.RequestChangePasswordResponse;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
+import com.iroff.supportlab.application.user.dto.UpdateMarketingAgreedRequest;
 import com.iroff.supportlab.application.user.dto.UpdateNameRequest;
 import com.iroff.supportlab.application.user.dto.UpdatePasswordRequest;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
@@ -37,6 +38,7 @@ import com.iroff.supportlab.domain.user.port.in.FindEmailUseCase;
 import com.iroff.supportlab.domain.user.port.in.GetUserInfoUseCase;
 import com.iroff.supportlab.domain.user.port.in.RequestChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
+import com.iroff.supportlab.domain.user.port.in.UpdateMarketingAgreedUseCase;
 import com.iroff.supportlab.domain.user.port.in.UpdateNameUseCase;
 import com.iroff.supportlab.domain.user.port.in.UpdatePasswordUseCase;
 import com.iroff.supportlab.framework.config.security.CustomUserDetails;
@@ -64,6 +66,7 @@ public class UserController {
 	private final CheckEmailExistsUseCase checkEmailExistsUseCase;
 	private final UpdatePasswordUseCase updatePasswordUseCase;
 	private final UpdateNameUseCase updateNameUseCase;
+	private final UpdateMarketingAgreedUseCase updateMarketingAgreedUseCase;
 
 	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@PostMapping("/sign-up")
@@ -203,4 +206,22 @@ public class UserController {
 			throw new APIException(e, errorStatus);
 		}
 	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(description = "사용자 이름 수정", summary = "사용자의 이름을 수정합니다.")
+	@PatchMapping("/me/marketing-agreed")
+	public ResponseEntity<Void> updateName(
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody UpdateMarketingAgreedRequest request
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			updateMarketingAgreedUseCase.updateMarketingAgreed(userId, request);
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
 }
