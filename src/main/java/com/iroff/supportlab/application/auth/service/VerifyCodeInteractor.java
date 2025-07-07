@@ -24,26 +24,45 @@ public class VerifyCodeInteractor implements VerifyCodeUseCase {
 	private final VerificationStateRepository stateRepository;
 
 	@Override
-	public VerifyCodeResponse verifyCode(VerifyCodeRequest request) {
+	public VerifyCodeResponse verifyCode(VerifyCodeRequest request, Long userId) {
 		VerificationType type = request.type();
 		String phone = request.phone();
 		String code = request.code();
 
-		String savedCode = codeRepository.find(type, phone)
-			.orElseThrow(() -> new DomainException(AuthError.CODE_NOT_EXISTS));
+		String savedCode;
+		if (userId == null) {
+			savedCode = codeRepository.find(type, phone)
+				.orElseThrow(() -> new DomainException(AuthError.CODE_NOT_EXISTS));
 
-		if (!savedCode.equals(code)) {
-			throw new DomainException(AuthError.VERIFY_CODE_FAILED);
+			if (!savedCode.equals(code)) {
+				throw new DomainException(AuthError.VERIFY_CODE_FAILED);
+			}
+			codeRepository.remove(type, phone);
+		} else {
+			savedCode = codeRepository.findByUser(type, phone, userId)
+				.orElseThrow(() -> new DomainException(AuthError.CODE_NOT_EXISTS));
+
+			if (!savedCode.equals(code)) {
+				throw new DomainException(AuthError.VERIFY_CODE_FAILED);
+			}
+			codeRepository.removeByUser(type, phone, userId);
 		}
-		codeRepository.remove(type, phone);
 
 		VerificationType verifiedType = switch (type) {
 			case SIGN_UP_CODE -> VerificationType.SIGN_UP_VERIFIED;
 			case FIND_EMAIL_CODE -> VerificationType.FIND_EMAIL_VERIFIED;
 			case FIND_PASSWORD_CODE -> VerificationType.FIND_PASSWORD_VERIFIED;
+			case UPDATE_PHONE_CODE -> VerificationType.UPDATE_PHONE_VERIFIED;
 			default -> throw new DomainException(AuthError.INVALID_REQUEST);
 		};
-		stateRepository.markedVerified(verifiedType, phone, Duration.ofMinutes(10));
+		if (userId == null && type != VerificationType.UPDATE_PHONE_CODE) {
+			// TODO : 휴대전화 업데이트 관련한 경우에는 userId가 있고 타입이 업데이트여야함 관련 로직 추가할것
+			stateRepository.markedVerified(verifiedType, phone, Duration.ofMinutes(10));
+		} else if (userId != null && type == VerificationType.UPDATE_PHONE_CODE) {
+			stateRepository.markedVerifiedByUser(verifiedType, phone, userId, Duration.ofMinutes(10));
+		} else {
+			throw new DomainException(AuthError.INVALID_REQUEST);
+		}
 		return new VerifyCodeResponse(VerifyCodeResponseStatus.SUCCESS);
 	}
 

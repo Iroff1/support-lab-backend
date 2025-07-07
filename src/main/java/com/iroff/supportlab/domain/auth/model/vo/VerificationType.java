@@ -15,11 +15,15 @@ public enum VerificationType {
 	@Schema(description = "비밀번호 찾기 인증 코드")
 	FIND_PASSWORD_CODE("findPasswordCode"),
 
+	@Schema(description = "전화번호 변경 인증 코드")
+	UPDATE_PHONE_CODE("updatePhoneCode"),
+
 	VERIFY_EMAIL_CODE("verifyEmailCode"),
 	SIGN_UP_VERIFIED("signupVerified"),
 	VERIFY_EMAIL_VERIFIED("verifyEmailVerified"),
 	FIND_EMAIL_VERIFIED("findEmailVerified"),
 	FIND_PASSWORD_VERIFIED("findPasswordVerified"),
+	UPDATE_PHONE_VERIFIED("updatePhoneVerified"),
 	RESET_PASSWORD("resetPassword");
 
 	private final String value;

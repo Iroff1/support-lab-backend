@@ -22,7 +22,9 @@ import com.iroff.supportlab.domain.auth.port.in.SendCodeEmailUseCase;
 import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeEmailUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeUseCase;
+import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
+import com.iroff.supportlab.framework.config.security.JwtTokenProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
+	private final JwtTokenProvider jwtTokenProvider;
 	private final SendCodeUseCase sendCodeUseCase;
 	private final VerifyCodeUseCase verifyCodeUseCase;
 	private final SendCodeEmailUseCase sendCodeEmailUseCase;
@@ -55,8 +58,19 @@ public class AuthController {
 		} else {
 			ip = servletRequest.getRemoteAddr();
 		}
+		String token = servletRequest.getHeader("Authorization");
+		Long userId = null;
+		if (token != null && !token.isBlank()) {
+			token = token.replace("Bearer ", "");
+			if (!jwtTokenProvider.validateToken(token)) {
+				DomainException e = new DomainException(AuthError.INVALID_AUTHORIZATION);
+				ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+				throw new APIException(e, errorStatus);
+			}
+			userId = jwtTokenProvider.getUserId(token);
+		}
 		try {
-			sendCodeUseCase.sendCode(request, ip);
+			sendCodeUseCase.sendCode(request, ip, userId);
 			return ResponseEntity.ok().build();
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
@@ -67,10 +81,22 @@ public class AuthController {
 	@Operation(summary = "휴대폰 번호 인증 코드 검증", description = "휴대폰으로 발송된 인증 코드를 검증합니다.")
 	@PostMapping("/verify-code")
 	public ResponseEntity<VerifyCodeResponse> verifyCode(
-		@Valid @RequestBody VerifyCodeRequest request
+		@Valid @RequestBody VerifyCodeRequest request,
+		HttpServletRequest servletRequest
 	) {
+		String token = servletRequest.getHeader("Authorization");
+		Long userId = null;
+		if (token != null && !token.isBlank()) {
+			token = token.replace("Bearer ", "");
+			if (!jwtTokenProvider.validateToken(token)) {
+				DomainException e = new DomainException(AuthError.INVALID_AUTHORIZATION);
+				ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+				throw new APIException(e, errorStatus);
+			}
+			userId = jwtTokenProvider.getUserId(token);
+		}
 		try {
-			VerifyCodeResponse response = verifyCodeUseCase.verifyCode(request);
+			VerifyCodeResponse response = verifyCodeUseCase.verifyCode(request, userId);
 			return ResponseEntity.ok().body(response);
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());

@@ -30,6 +30,7 @@ import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
 import com.iroff.supportlab.application.user.dto.UpdateMarketingAgreedRequest;
 import com.iroff.supportlab.application.user.dto.UpdateNameRequest;
 import com.iroff.supportlab.application.user.dto.UpdatePasswordRequest;
+import com.iroff.supportlab.application.user.dto.UpdatePhoneNumberRequest;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.port.in.ChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.CheckEmailExistsUseCase;
@@ -41,6 +42,7 @@ import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
 import com.iroff.supportlab.domain.user.port.in.UpdateMarketingAgreedUseCase;
 import com.iroff.supportlab.domain.user.port.in.UpdateNameUseCase;
 import com.iroff.supportlab.domain.user.port.in.UpdatePasswordUseCase;
+import com.iroff.supportlab.domain.user.port.in.UpdatePhoneNumberUseCase;
 import com.iroff.supportlab.framework.config.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,6 +67,7 @@ public class UserController {
 	private final DeleteUserUseCase deleteUserUseCase;
 	private final CheckEmailExistsUseCase checkEmailExistsUseCase;
 	private final UpdatePasswordUseCase updatePasswordUseCase;
+	private final UpdatePhoneNumberUseCase updatePhoneNumberUseCase;
 	private final UpdateNameUseCase updateNameUseCase;
 	private final UpdateMarketingAgreedUseCase updateMarketingAgreedUseCase;
 
@@ -183,6 +186,23 @@ public class UserController {
 		try {
 			Long userId = user.getUser().getId();
 			updatePasswordUseCase.updatePassword(userId, request);
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(description = "전화번호 수정", summary = "회원의 전화번호를 수정합니다.")
+	@PatchMapping("/me/phone")
+	public ResponseEntity<Void> updatePhoneNumber(
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody UpdatePhoneNumberRequest request
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			updatePhoneNumberUseCase.updatePhoneNumber(userId, request);
 			return ResponseEntity.ok().build();
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
