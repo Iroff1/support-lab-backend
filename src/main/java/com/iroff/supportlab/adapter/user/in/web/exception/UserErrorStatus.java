@@ -33,6 +33,7 @@ public class UserErrorStatus implements ErrorStatus {
 		errorMap.put(UserError.WRONG_PASSWORD.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.SAME_NAME_NOT_ALLOWED.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(UserError.SAME_PASSWORD_NOT_ALLOWED.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(UserError.SAME_PHONE_NUMBER_NOT_ALLOWED.getCode(), HttpStatus.BAD_REQUEST);
 	}
 
 	@Override

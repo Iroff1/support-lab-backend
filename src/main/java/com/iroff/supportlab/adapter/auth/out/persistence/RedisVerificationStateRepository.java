@@ -22,13 +22,29 @@ public class RedisVerificationStateRepository implements VerificationStateReposi
 	}
 
 	@Override
+	public void markedVerifiedByUser(VerificationType type, String phone, Long userId, Duration ttl) {
+		redis.opsForValue().set(type.getValue() + phone + "-" + userId, "true", ttl);
+	}
+
+	@Override
 	public boolean isVerified(VerificationType type, String phone) {
 		String isVerified = redis.opsForValue().get(type.getValue() + phone);
 		return isVerified != null && isVerified.equals("true");
 	}
 
 	@Override
+	public boolean isVerifiedByUser(VerificationType type, String phone, Long userId) {
+		String isVerified = redis.opsForValue().get(type.getValue() + phone + "-" + userId);
+		return isVerified != null && isVerified.equals("true");
+	}
+
+	@Override
 	public void remove(VerificationType type, String phone) {
 		redis.delete(type.getValue() + phone);
+	}
+
+	@Override
+	public void removeByUser(VerificationType type, String phone, Long userId) {
+		redis.delete(type.getValue() + phone + "-" + userId);
 	}
 }

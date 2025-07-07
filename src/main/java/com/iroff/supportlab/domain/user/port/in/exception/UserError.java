@@ -23,7 +23,8 @@ public enum UserError implements ErrorInfo {
 	UPDATE_PASSWORD_FAILED("비밀번호 변경에 실패했습니다."),
 	WRONG_PASSWORD("비밀번호가 맞지 않습니다."),
 	SAME_NAME_NOT_ALLOWED("이전과 다른 이름을 사용해주세요."),
-	SAME_PASSWORD_NOT_ALLOWED("이전과 다른 비밀번호를 사용해주세요.");
+	SAME_PASSWORD_NOT_ALLOWED("이전과 다른 비밀번호를 사용해주세요."),
+	SAME_PHONE_NUMBER_NOT_ALLOWED("이전과 다른 전화번호를 사용해주세요.");
 
 	private final String desc;
 
