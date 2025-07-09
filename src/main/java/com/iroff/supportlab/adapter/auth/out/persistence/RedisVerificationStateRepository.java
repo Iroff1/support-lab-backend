@@ -14,28 +14,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RedisVerificationStateRepository implements VerificationStateRepository {
 
+	private static final String VERIFIED_VALUE = "true";
 	private final StringRedisTemplate redis;
 
 	@Override
 	public void markedVerified(VerificationType type, String phone, Duration ttl) {
-		redis.opsForValue().set(type.getValue() + phone, "true", ttl);
+		redis.opsForValue().set(type.getValue() + phone, VERIFIED_VALUE, ttl);
 	}
 
 	@Override
 	public void markedVerifiedByUser(VerificationType type, String phone, Long userId, Duration ttl) {
-		redis.opsForValue().set(type.getValue() + phone + "-" + userId, "true", ttl);
+		redis.opsForValue().set(type.getValue() + phone + "-" + userId, VERIFIED_VALUE, ttl);
 	}
 
 	@Override
 	public boolean isVerified(VerificationType type, String phone) {
 		String isVerified = redis.opsForValue().get(type.getValue() + phone);
-		return isVerified != null && isVerified.equals("true");
+		return isVerified != null && isVerified.equals(VERIFIED_VALUE);
 	}
 
 	@Override
 	public boolean isVerifiedByUser(VerificationType type, String phone, Long userId) {
 		String isVerified = redis.opsForValue().get(type.getValue() + phone + "-" + userId);
-		return isVerified != null && isVerified.equals("true");
+		return isVerified != null && isVerified.equals(VERIFIED_VALUE);
 	}
 
 	@Override
