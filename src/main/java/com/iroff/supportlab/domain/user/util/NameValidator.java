@@ -1,6 +1,6 @@
 package com.iroff.supportlab.domain.user.util;
 
-public class NameValidator {
+public final class NameValidator {
 	// 한글 2~6자만 허용
 	private static final String NAME_PATTERN = "^[가-힣]{2,6}$";
 
