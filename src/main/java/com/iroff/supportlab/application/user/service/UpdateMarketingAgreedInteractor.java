@@ -28,10 +28,4 @@ public class UpdateMarketingAgreedInteractor implements UpdateMarketingAgreedUse
 		boolean marketingAgreed = request.marketingAgreed();
 		user.changeMarketingAgreed(marketingAgreed);
 	}
-
-	void checkCondition(boolean condition, ErrorInfo error) {
-		if (!condition) {
-			throw new DomainException(error);
-		}
-	}
 }
