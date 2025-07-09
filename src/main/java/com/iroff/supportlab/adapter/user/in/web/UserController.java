@@ -228,9 +228,9 @@ public class UserController {
 	}
 
 	@SecurityRequirement(name = "bearerAuth")
-	@Operation(description = "사용자 이름 수정", summary = "사용자의 이름을 수정합니다.")
+	@Operation(description = "마케팅 동의 여부 수정", summary = "마케팅 동의 여부를 수정합니다.")
 	@PatchMapping("/me/marketing-agreed")
-	public ResponseEntity<Void> updateName(
+	public ResponseEntity<Void> updateMarketingAgreed(
 		@AuthenticationPrincipal CustomUserDetails user,
 		@Valid @RequestBody UpdateMarketingAgreedRequest request
 	) {
