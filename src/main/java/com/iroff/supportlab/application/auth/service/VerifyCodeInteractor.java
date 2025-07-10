@@ -56,7 +56,6 @@ public class VerifyCodeInteractor implements VerifyCodeUseCase {
 			default -> throw new DomainException(AuthError.INVALID_REQUEST);
 		};
 		if (userId == null && type != VerificationType.UPDATE_PHONE_CODE) {
-			// TODO : 휴대전화 업데이트 관련한 경우에는 userId가 있고 타입이 업데이트여야함 관련 로직 추가할것
 			stateRepository.markedVerified(verifiedType, phone, Duration.ofMinutes(10));
 		} else if (userId != null && type == VerificationType.UPDATE_PHONE_CODE) {
 			stateRepository.markedVerifiedByUser(verifiedType, phone, userId, Duration.ofMinutes(10));
