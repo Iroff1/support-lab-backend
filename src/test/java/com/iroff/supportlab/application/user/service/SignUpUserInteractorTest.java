@@ -56,6 +56,7 @@ class SignUpUserInteractorTest {
 	void signUp_success() {
 		when(userRepository.existsByEmail(anyString())).thenReturn(false);
 		when(userRepository.existsByPhone(anyString())).thenReturn(false);
+		when(userRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 		when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(true);
 		when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 

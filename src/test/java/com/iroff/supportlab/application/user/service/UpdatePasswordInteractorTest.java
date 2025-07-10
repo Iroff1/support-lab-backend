@@ -43,6 +43,7 @@ class UpdatePasswordInteractorTest {
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
 		when(mockUser.getPassword()).thenReturn(ENCODED_PASSWORD);
 		when(passwordEncoder.matches(OLD_PASSWORD, ENCODED_PASSWORD)).thenReturn(true);
+		when(passwordEncoder.encode(NEW_PASSWORD)).thenReturn(ENCODED_PASSWORD);
 
 		// when
 		assertDoesNotThrow(() -> updatePasswordInteractor.updatePassword(USER_ID, request));
@@ -50,7 +51,7 @@ class UpdatePasswordInteractorTest {
 		// then
 		verify(userRepository).findById(USER_ID);
 		verify(passwordEncoder).matches(OLD_PASSWORD, ENCODED_PASSWORD);
-		verify(mockUser).changePassword(NEW_PASSWORD);
+		verify(mockUser).changePassword(ENCODED_PASSWORD);
 	}
 
 	@Test

@@ -15,11 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.iroff.supportlab.adapter.user.out.persistence.UserEntity;
 import com.iroff.supportlab.application.user.dto.DeleteUserRequest;
 import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.model.Role;
+import com.iroff.supportlab.domain.user.model.User;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
 import com.iroff.supportlab.domain.user.port.out.UserRepository;
 
@@ -35,12 +35,12 @@ class DeleteUserInteractorTest {
 	@InjectMocks
 	private DeleteUserInteractor deleteUserInteractor;
 
-	private UserEntity userEntity;
+	private User user;
 	private DeleteUserRequest deleteUserRequest;
 
 	@BeforeEach
 	void setUp() {
-		userEntity = UserEntity.builder()
+		user = User.builder()
 			.id(1L)
 			.email("test@example.com")
 			.password("encodedPassword")
@@ -52,9 +52,9 @@ class DeleteUserInteractorTest {
 	@Test
 	@DisplayName("사용자 삭제 성공")
 	void deleteUser_success() {
-		when(userRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
-		when(userRepository.existsById(anyLong())).thenReturn(true);
+		when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+		when(userRepository.existsById(anyLong())).thenReturn(true);
 
 		deleteUserInteractor.deleteUser(1L, deleteUserRequest);
 
@@ -76,7 +76,7 @@ class DeleteUserInteractorTest {
 	@Test
 	@DisplayName("사용자 삭제 실패 - 잘못된 비밀번호")
 	void deleteUser_fail_invalidPassword() {
-		when(userRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
+		when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 		when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
 		DomainException exception = assertThrows(DomainException.class, () -> {

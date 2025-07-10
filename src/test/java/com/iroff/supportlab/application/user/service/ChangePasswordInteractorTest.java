@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.iroff.supportlab.adapter.user.out.persistence.UserEntity;
 import com.iroff.supportlab.application.user.dto.ChangePasswordRequest;
 import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
 import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
@@ -50,7 +49,7 @@ class ChangePasswordInteractorTest {
 	@Test
 	@DisplayName("비밀번호 변경 성공")
 	void changePassword_success() {
-		User user = spy(UserEntity.builder().id(1L).build());
+		User user = spy(User.builder().id(1L).build());
 		when(verificationCodeRepository.find(any(VerificationType.class), anyString())).thenReturn(Optional.of("1"));
 		when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 		when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
