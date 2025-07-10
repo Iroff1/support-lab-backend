@@ -2,8 +2,14 @@ package com.iroff.supportlab.domain.common.model;
 
 import java.time.LocalDateTime;
 
-public interface BaseTime {
-	LocalDateTime getCreatedAt();
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-	LocalDateTime getModifiedAt();
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class BaseTime {
+	protected LocalDateTime createdAt;
+	protected LocalDateTime modifiedAt;
 }
