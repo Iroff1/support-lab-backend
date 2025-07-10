@@ -27,5 +27,6 @@ public class UpdateMarketingAgreedInteractor implements UpdateMarketingAgreedUse
 
 		boolean marketingAgreed = request.marketingAgreed();
 		user.changeMarketingAgreed(marketingAgreed);
+		userRepository.save(user);
 	}
 }

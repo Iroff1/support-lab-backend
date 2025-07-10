@@ -35,8 +35,8 @@ public class UpdatePasswordInteractor implements UpdatePasswordUseCase {
 		checkCondition(passwordEncoder.matches(oldPassword, user.getPassword()), UserError.WRONG_PASSWORD);
 		PasswordValidator.validatePassword(newPassword);
 
-		user.changePassword(newPassword);
 		user.changePassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
 	}
 
 	void checkCondition(boolean condition, ErrorInfo error) {

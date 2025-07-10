@@ -30,6 +30,7 @@ public class UpdateNameInteractor implements UpdateNameUseCase {
 		checkCondition(!user.getName().equals(newName), UserError.SAME_NAME_NOT_ALLOWED);
 		checkCondition(NameValidator.isValidName(newName), UserError.INVALID_NAME);
 		user.changeName(newName);
+		userRepository.save(user);
 	}
 
 	void checkCondition(boolean condition, ErrorInfo error) {

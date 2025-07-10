@@ -38,6 +38,7 @@ public class UpdatePhoneNumberInteractor implements UpdatePhoneNumberUseCase {
 
 		verificationStateRepository.remove(VerificationType.UPDATE_PHONE_VERIFIED, newPhone);
 		user.changePhone(newPhone);
+		userRepository.save(user);
 	}
 
 	void checkCondition(boolean condition, ErrorInfo error) {
