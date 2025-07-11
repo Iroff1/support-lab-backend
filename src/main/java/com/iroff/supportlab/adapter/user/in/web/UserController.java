@@ -27,6 +27,10 @@ import com.iroff.supportlab.application.user.dto.RequestChangePasswordRequest;
 import com.iroff.supportlab.application.user.dto.RequestChangePasswordResponse;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
+import com.iroff.supportlab.application.user.dto.UpdateMarketingAgreedRequest;
+import com.iroff.supportlab.application.user.dto.UpdateNameRequest;
+import com.iroff.supportlab.application.user.dto.UpdatePasswordRequest;
+import com.iroff.supportlab.application.user.dto.UpdatePhoneNumberRequest;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.port.in.ChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.CheckEmailExistsUseCase;
@@ -35,6 +39,10 @@ import com.iroff.supportlab.domain.user.port.in.FindEmailUseCase;
 import com.iroff.supportlab.domain.user.port.in.GetUserInfoUseCase;
 import com.iroff.supportlab.domain.user.port.in.RequestChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
+import com.iroff.supportlab.domain.user.port.in.UpdateMarketingAgreedUseCase;
+import com.iroff.supportlab.domain.user.port.in.UpdateNameUseCase;
+import com.iroff.supportlab.domain.user.port.in.UpdatePasswordUseCase;
+import com.iroff.supportlab.domain.user.port.in.UpdatePhoneNumberUseCase;
 import com.iroff.supportlab.framework.config.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,6 +66,10 @@ public class UserController {
 	private final GetUserInfoUseCase getUserInfoUseCase;
 	private final DeleteUserUseCase deleteUserUseCase;
 	private final CheckEmailExistsUseCase checkEmailExistsUseCase;
+	private final UpdatePasswordUseCase updatePasswordUseCase;
+	private final UpdatePhoneNumberUseCase updatePhoneNumberUseCase;
+	private final UpdateNameUseCase updateNameUseCase;
+	private final UpdateMarketingAgreedUseCase updateMarketingAgreedUseCase;
 
 	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@PostMapping("/sign-up")
@@ -163,4 +175,73 @@ public class UserController {
 			throw new APIException(e, errorStatus);
 		}
 	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(description = "비밀번호 수정", summary = "기존 비밀번호에서 새로운 비밀번호로 수정합니다.")
+	@PatchMapping("/me/password")
+	public ResponseEntity<Void> updatePassword(
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody UpdatePasswordRequest request
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			updatePasswordUseCase.updatePassword(userId, request);
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(description = "전화번호 수정", summary = "회원의 전화번호를 수정합니다.")
+	@PatchMapping("/me/phone")
+	public ResponseEntity<Void> updatePhoneNumber(
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody UpdatePhoneNumberRequest request
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			updatePhoneNumberUseCase.updatePhoneNumber(userId, request);
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(description = "사용자 이름 수정", summary = "사용자의 이름을 수정합니다.")
+	@PatchMapping("/me/name")
+	public ResponseEntity<Void> updateName(
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody UpdateNameRequest request
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			updateNameUseCase.updateName(userId, request);
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(description = "마케팅 동의 여부 수정", summary = "마케팅 동의 여부를 수정합니다.")
+	@PatchMapping("/me/marketing-agreed")
+	public ResponseEntity<Void> updateMarketingAgreed(
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody UpdateMarketingAgreedRequest request
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			updateMarketingAgreedUseCase.updateMarketingAgreed(userId, request);
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
+
 }

@@ -14,20 +14,21 @@ import lombok.RequiredArgsConstructor;
 public class UserRepositoryImpl implements UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
+	private final UserMapper userMapper;
 
 	@Override
 	public Optional<User> findById(Long id) {
-		return userJpaRepository.findById(id).map(userEntity -> userEntity);
+		return userJpaRepository.findById(id).map(userMapper::mapToDomain);
 	}
 
 	@Override
 	public Optional<User> findByEmail(String email) {
-		return userJpaRepository.findByEmail(email);
+		return userJpaRepository.findByEmail(email).map(userMapper::mapToDomain);
 	}
 
 	@Override
 	public Optional<User> findByPhone(String phone) {
-		return userJpaRepository.findByPhone(phone);
+		return userJpaRepository.findByPhone(phone).map(userMapper::mapToDomain);
 	}
 
 	@Override
@@ -36,8 +37,10 @@ public class UserRepositoryImpl implements UserRepository {
 	}
 
 	@Override
-	public void save(User user) {
-		userJpaRepository.save(user);
+	public User save(User user) {
+		UserEntity entity = userMapper.mapToEntity(user);
+		UserEntity savedEntity = userJpaRepository.save(entity);
+		return userMapper.mapToDomain(savedEntity);
 	}
 
 	@Override

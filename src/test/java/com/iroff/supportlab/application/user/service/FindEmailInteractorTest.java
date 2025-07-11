@@ -1,13 +1,11 @@
 package com.iroff.supportlab.application.user.service;
 
-import com.iroff.supportlab.adapter.user.out.persistence.UserEntity;
-import com.iroff.supportlab.application.user.dto.FindEmailRequest;
-import com.iroff.supportlab.application.user.dto.FindEmailResponse;
-import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
-import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
-import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
-import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
-import com.iroff.supportlab.domain.user.port.out.UserRepository;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,79 +14,81 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import com.iroff.supportlab.application.user.dto.FindEmailRequest;
+import com.iroff.supportlab.application.user.dto.FindEmailResponse;
+import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
+import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
+import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
+import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
+import com.iroff.supportlab.domain.user.model.User;
+import com.iroff.supportlab.domain.user.port.out.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class FindEmailInteractorTest {
 
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private VerificationStateRepository verificationStateRepository;
+	@Mock
+	private UserRepository userRepository;
+	@Mock
+	private VerificationStateRepository verificationStateRepository;
 
-    @InjectMocks
-    private FindEmailInteractor findEmailInteractor;
+	@InjectMocks
+	private FindEmailInteractor findEmailInteractor;
 
-    private FindEmailRequest findEmailRequest;
-    private UserEntity userEntity;
+	private FindEmailRequest findEmailRequest;
+	private User user;
 
-    @BeforeEach
-    void setUp() {
-        findEmailRequest = new FindEmailRequest("Test User", "01012345678");
-        userEntity = UserEntity.builder()
-                .name("Test User")
-                .email("test@example.com")
-                .phone("01012345678")
-                .build();
-    }
+	@BeforeEach
+	void setUp() {
+		findEmailRequest = new FindEmailRequest("Test User", "01012345678");
+		user = User.builder()
+			.name("Test User")
+			.email("test@example.com")
+			.phone("01012345678")
+			.build();
+	}
 
-    @Test
-    @DisplayName("이메일 찾기 성공")
-    void findEmail_success() {
-        when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(true);
-        when(userRepository.findByPhone(anyString())).thenReturn(Optional.of(userEntity));
+	@Test
+	@DisplayName("이메일 찾기 성공")
+	void findEmail_success() {
+		when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(true);
+		when(userRepository.findByPhone(anyString())).thenReturn(Optional.of(user));
 
-        FindEmailResponse response = findEmailInteractor.findEmail(findEmailRequest);
+		FindEmailResponse response = findEmailInteractor.findEmail(findEmailRequest);
 
-        assertEquals("test@example.com", response.email());
-    }
+		assertEquals("test@example.com", response.email());
+	}
 
-    @Test
-    @DisplayName("이메일 찾기 실패 - 인증 실패")
-    void findEmail_fail_verificationFailed() {
-        when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(false);
+	@Test
+	@DisplayName("이메일 찾기 실패 - 인증 실패")
+	void findEmail_fail_verificationFailed() {
+		when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(false);
 
-        DomainException exception = assertThrows(DomainException.class, () -> {
-            findEmailInteractor.findEmail(findEmailRequest);
-        });
-        assertEquals(AuthError.VERIFY_CODE_FAILED, exception.getError());
-    }
+		DomainException exception = assertThrows(DomainException.class, () -> {
+			findEmailInteractor.findEmail(findEmailRequest);
+		});
+		assertEquals(AuthError.VERIFY_CODE_FAILED, exception.getError());
+	}
 
-    @Test
-    @DisplayName("이메일 찾기 실패 - 사용자 정보 불일치")
-    void findEmail_fail_userInfoMismatch() {
-        when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(true);
-        UserEntity mismatchedUser = UserEntity.builder().name("Wrong User").build();
-        when(userRepository.findByPhone(anyString())).thenReturn(Optional.of(mismatchedUser));
+	@Test
+	@DisplayName("이메일 찾기 실패 - 사용자 정보 불일치")
+	void findEmail_fail_userInfoMismatch() {
+		when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(true);
+		User mismatchedUser = User.builder().name("Wrong User").build();
+		when(userRepository.findByPhone(anyString())).thenReturn(Optional.of(mismatchedUser));
 
-        FindEmailResponse response = findEmailInteractor.findEmail(findEmailRequest);
+		FindEmailResponse response = findEmailInteractor.findEmail(findEmailRequest);
 
-        assertNull(response.email());
-    }
+		assertNull(response.email());
+	}
 
-    @Test
-    @DisplayName("이메일 찾기 실패 - 사용자가 존재하지 않음")
-    void findEmail_fail_userNotFound() {
-        when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(true);
-        when(userRepository.findByPhone(anyString())).thenReturn(Optional.empty());
+	@Test
+	@DisplayName("이메일 찾기 실패 - 사용자가 존재하지 않음")
+	void findEmail_fail_userNotFound() {
+		when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(true);
+		when(userRepository.findByPhone(anyString())).thenReturn(Optional.empty());
 
-        FindEmailResponse response = findEmailInteractor.findEmail(findEmailRequest);
+		FindEmailResponse response = findEmailInteractor.findEmail(findEmailRequest);
 
-        assertNull(response.email());
-    }
+		assertNull(response.email());
+	}
 } 

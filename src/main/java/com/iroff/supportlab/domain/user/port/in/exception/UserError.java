@@ -5,6 +5,7 @@ import com.iroff.supportlab.domain.common.port.in.exception.ErrorInfo;
 public enum UserError implements ErrorInfo {
 	EMAIL_ALREADY_EXISTS("이미 사용 중인 이메일입니다."),
 	PHONE_ALREADY_EXISTS("이미 사용 중인 전화번호입니다."),
+	INVALID_NAME("유효하지 않은 이름입니다."),
 	INVALID_EMAIL("유효하지 않은 이메일 형식입니다."),
 	INVALID_PASSWORD_LENGTH("비밀번호는 8자 이상이어야 합니다."),
 	INVALID_PASSWORD_UPPERCASE("비밀번호는 최소 하나 이상의 대문자를 포함해야 합니다."),
@@ -18,7 +19,12 @@ public enum UserError implements ErrorInfo {
 	INVALID_MARKETING_AGREE("마케팅 수신 동의 여부는 필수입니다."),
 	USER_NOT_FOUND("존재하지 않는 사용자입니다."),
 	PASSWORD_ALREADY_CHANGED("다른 곳에서 비밀번호가 바뀌어 요청이 취소되었습니다."),
-	DELETE_USER_FAILED("이미 삭제된 사용자이거나 과정에 문제가 발생했습니다.");
+	DELETE_USER_FAILED("이미 삭제된 사용자이거나 과정에 문제가 발생했습니다."),
+	UPDATE_PASSWORD_FAILED("비밀번호 변경에 실패했습니다."),
+	WRONG_PASSWORD("비밀번호가 맞지 않습니다."),
+	SAME_NAME_NOT_ALLOWED("이전과 다른 이름을 사용해주세요."),
+	SAME_PASSWORD_NOT_ALLOWED("이전과 다른 비밀번호를 사용해주세요."),
+	SAME_PHONE_NUMBER_NOT_ALLOWED("이전과 다른 전화번호를 사용해주세요.");
 
 	private final String desc;
 

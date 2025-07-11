@@ -43,7 +43,7 @@ class SignUpUserInteractorTest {
 		signUpUserRequest = new SignUpUserRequest(
 			"test@example.com",
 			"Password12!",
-			"Test User",
+			"홍길동",
 			"01012345678",
 			true,
 			true,
@@ -56,6 +56,7 @@ class SignUpUserInteractorTest {
 	void signUp_success() {
 		when(userRepository.existsByEmail(anyString())).thenReturn(false);
 		when(userRepository.existsByPhone(anyString())).thenReturn(false);
+		when(userRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 		when(verificationStateRepository.isVerified(any(VerificationType.class), anyString())).thenReturn(true);
 		when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
 
@@ -99,5 +100,120 @@ class SignUpUserInteractorTest {
 			signUpUserInteractor.signUp(signUpUserRequest);
 		});
 		assertEquals(UserError.VERIFICATION_FAILED, exception.getError());
+	}
+
+	@Test
+	@DisplayName("회원가입 실패 - 이름이 한 글자")
+	void signUp_fail_singleCharacterName() {
+		// given
+		SignUpUserRequest invalidRequest = new SignUpUserRequest(
+			"test@example.com",
+			"Password12!",
+			"홍",  // 한 글자
+			"01012345678",
+			true,
+			true,
+			false
+		);
+
+		// when & then
+		DomainException exception = assertThrows(DomainException.class, () -> {
+			signUpUserInteractor.signUp(invalidRequest);
+		});
+		assertEquals(UserError.INVALID_NAME, exception.getError());
+
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	@DisplayName("회원가입 실패 - 이름이 너무 긴 경우")
+	void signUp_fail_nameTooLong() {
+		// given
+		SignUpUserRequest invalidRequest = new SignUpUserRequest(
+			"test@example.com",
+			"Password12!",
+			"홍길동일이삼사",  // 7글자
+			"01012345678",
+			true,
+			true,
+			false
+		);
+
+		// when & then
+		DomainException exception = assertThrows(DomainException.class, () -> {
+			signUpUserInteractor.signUp(invalidRequest);
+		});
+		assertEquals(UserError.INVALID_NAME, exception.getError());
+
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	@DisplayName("회원가입 실패 - 한글이 아닌 문자가 포함된 이름")
+	void signUp_fail_nonKoreanCharactersInName() {
+		// given
+		SignUpUserRequest invalidRequest = new SignUpUserRequest(
+			"test@example.com",
+			"Password12!",
+			"Hong",  // 영문
+			"01012345678",
+			true,
+			true,
+			false
+		);
+
+		// when & then
+		DomainException exception = assertThrows(DomainException.class, () -> {
+			signUpUserInteractor.signUp(invalidRequest);
+		});
+		assertEquals(UserError.INVALID_NAME, exception.getError());
+
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	@DisplayName("회원가입 실패 - 특수문자가 포함된 이름")
+	void signUp_fail_specialCharactersInName() {
+		// given
+		SignUpUserRequest invalidRequest = new SignUpUserRequest(
+			"test@example.com",
+			"Password12!",
+			"홍길★동",  // 특수문자 포함
+			"01012345678",
+			true,
+			true,
+			false
+		);
+
+		// when & then
+		DomainException exception = assertThrows(DomainException.class, () -> {
+			signUpUserInteractor.signUp(invalidRequest);
+		});
+		assertEquals(UserError.INVALID_NAME, exception.getError());
+
+		verify(userRepository, never()).save(any());
+	}
+
+	@Test
+	@DisplayName("회원가입 실패 - 공백이 포함된 이름")
+	void signUp_fail_nameContainsWhitespace() {
+		// given
+		SignUpUserRequest invalidRequest = new SignUpUserRequest(
+			"test@example.com",
+			"Password12!",
+			"홍 길동",  // 공백 포함
+			"01012345678",
+			true,
+			true,
+			false
+		);
+
+		// when & then
+		DomainException exception = assertThrows(DomainException.class, () -> {
+			signUpUserInteractor.signUp(invalidRequest);
+		});
+		assertEquals(UserError.INVALID_NAME, exception.getError());
+
+		verify(userRepository, never()).save(any());
 	}
 } 

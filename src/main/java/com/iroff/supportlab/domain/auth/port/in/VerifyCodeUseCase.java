@@ -5,5 +5,5 @@ import com.iroff.supportlab.application.auth.dto.VerifyCodeResponse;
 import com.iroff.supportlab.domain.common.port.in.Validator;
 
 public interface VerifyCodeUseCase extends Validator<VerifyCodeRequest> {
-	VerifyCodeResponse verifyCode(VerifyCodeRequest request);
+	VerifyCodeResponse verifyCode(VerifyCodeRequest request, Long userId);
 }

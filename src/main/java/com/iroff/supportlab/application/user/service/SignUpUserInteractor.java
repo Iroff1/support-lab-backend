@@ -5,16 +5,17 @@ import static com.iroff.supportlab.domain.user.util.PasswordValidator.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.iroff.supportlab.adapter.user.out.persistence.UserEntity;
 import com.iroff.supportlab.application.user.dto.SignUpUserRequest;
 import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
 import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
 import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.model.Role;
+import com.iroff.supportlab.domain.user.model.User;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
 import com.iroff.supportlab.domain.user.port.out.UserRepository;
+import com.iroff.supportlab.domain.user.util.NameValidator;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 	public SignUpUserResponse signUp(SignUpUserRequest request) {
 		checkCondition(!userRepository.existsByEmail(request.email()), UserError.EMAIL_ALREADY_EXISTS);
 		checkCondition(!userRepository.existsByPhone(request.phone()), UserError.PHONE_ALREADY_EXISTS);
+		checkCondition(NameValidator.isValidName(request.name()), UserError.INVALID_NAME);
 		checkCondition(verificationStateRepository.isVerified(VerificationType.SIGN_UP_VERIFIED, request.phone()),
 			UserError.VERIFICATION_FAILED);
 		checkCondition(request.termsOfServiceAgreed() != null && request.termsOfServiceAgreed(),
@@ -49,7 +51,8 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 
 		verificationStateRepository.remove(VerificationType.SIGN_UP_VERIFIED, request.phone());
 
-		UserEntity user = UserEntity.builder()
+		String encodedPassword = passwordEncoder.encode(request.password());
+		User user = User.builder()
 			.email(request.email())
 			.password(passwordEncoder.encode(request.password()))
 			.name(request.name())
@@ -61,7 +64,7 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 			.marketingAgreed(request.marketingAgreed())
 			.build();
 		try {
-			userRepository.save(user);
+			user = userRepository.save(user);
 		} catch (Exception e) {
 			throw new DomainException(UserError.EMAIL_ALREADY_EXISTS);
 		}

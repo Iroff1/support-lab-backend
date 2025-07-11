@@ -13,7 +13,7 @@ public interface UserRepository {
 
 	void deleteById(Long id);
 
-	void save(User user);
+	User save(User user);
 
 	boolean existsById(Long id);
 

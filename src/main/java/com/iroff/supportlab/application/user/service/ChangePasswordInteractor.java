@@ -48,5 +48,6 @@ public class ChangePasswordInteractor implements ChangePasswordUseCase {
 		} catch (OptimisticLockException e) {
 			throw new DomainException(UserError.PASSWORD_ALREADY_CHANGED);
 		}
+		userRepository.save(user);
 	}
 }

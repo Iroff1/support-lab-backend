@@ -44,9 +44,9 @@ management:
       exposure:
         include: health,info
 
-# spring-security ?? ?, ????? H2 ?? ???? ???
-# application-local.yml? ? ??? ?????,
-# SecurityConfig?? @Profile("local")? ?? ?????.
+# spring-security 사용 시, 로컬에서만 H2 콘솔 허용하고 싶다면
+# application-local.yml에 이 설정을 추가하거나,
+# SecurityConfig에서 @Profile("local")로 분기 처리하세요.
 # security:
 #   ignored: /h2-console/**
 
