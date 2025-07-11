@@ -34,11 +34,13 @@ public class SendCodeInteractor implements SendCodeUseCase {
 		String phone = request.phone();
 		String code = verifyCodeGenerator.generateCode();
 		smsClient.sendCode(phone, code);
-		if (userId == null) {
+		if (userId == null && type != VerificationType.UPDATE_PHONE_CODE) {
 			verificationCodeRepository.save(type, phone, code, Duration.ofMinutes(MAX_TRY_LIMIT));
-		} else {
+		} else if (userId != null && type == VerificationType.UPDATE_PHONE_CODE) {
 			verificationCodeRepository.saveByUserId(type, phone, userId, code,
 				Duration.ofMinutes(MAX_TRY_LIMIT));
+		} else {
+			throw new DomainException(AuthError.INVALID_REQUEST);
 		}
 	}
 
