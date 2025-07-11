@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ import com.iroff.supportlab.application.auth.dto.VerifyCodeEmailRequest;
 import com.iroff.supportlab.application.auth.dto.VerifyCodeRequest;
 import com.iroff.supportlab.application.auth.dto.VerifyCodeResponse;
 import com.iroff.supportlab.domain.auth.port.in.LoginUseCase;
+import com.iroff.supportlab.domain.auth.port.in.LogoutUseCase;
 import com.iroff.supportlab.domain.auth.port.in.SendCodeEmailUseCase;
 import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeEmailUseCase;
@@ -28,6 +30,7 @@ import com.iroff.supportlab.framework.config.security.CustomUserDetails;
 import com.iroff.supportlab.framework.config.security.JwtTokenProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -44,6 +47,7 @@ public class AuthController {
 	private final SendCodeEmailUseCase sendCodeEmailUseCase;
 	private final VerifyCodeEmailUseCase verifyCodeEmailUseCase;
 	private final LoginUseCase loginUseCase;
+	private final LogoutUseCase logoutUseCase;
 	private final ErrorStatusResolver errorStatusResolver;
 
 	@Operation(summary = "휴대폰 번호 인증 코드 발송", description = "휴대폰 번호 인증 코드를 발송합니다. 회원가입, 이메일 찾기, 비밀번호 찾기에 사용됩니다.")
@@ -143,5 +147,20 @@ public class AuthController {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
 			throw new APIException(e, errorStatus);
 		}
+	}
+
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(summary = "로그아웃", description = "현재 로그인된 사용자를 로그아웃 처리합니다. 서버에서는 해당 토큰을 블랙리스트에 추가하여 더 이상 사용할 수 없도록 합니다.")
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout(
+		@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String accessToken
+	) {
+		try {
+			logoutUseCase.logout(accessToken);
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+		return ResponseEntity.ok().build();
 	}
 }

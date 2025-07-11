@@ -12,7 +12,8 @@ public enum AuthError implements ErrorInfo {
 	EXPIRED_TOKEN("토큰이 만료되었습니다."),
 	TOKEN_EXPIRED("접근 권한이 없습니다."),
 	INVALID_REQUEST("잘못된 요청입니다."),
-	INVALID_PASSWORD("비밀번호가 올바르지 않습니다.");
+	INVALID_PASSWORD("비밀번호가 올바르지 않습니다."),
+	LOGOUT_FAILED("로그아웃에 실패했습니다.");
 
 	private final String desc;
 
