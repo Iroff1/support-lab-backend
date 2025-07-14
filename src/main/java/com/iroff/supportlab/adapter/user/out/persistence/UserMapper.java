@@ -8,7 +8,7 @@ import com.iroff.supportlab.domain.user.model.User;
 public class UserMapper {
 
 	public UserEntity mapToEntity(User user) {
-		UserEntity entity = UserEntity.builder()
+		return UserEntity.builder()
 			.id(user.getId())
 			.password(user.getPassword())
 			.email(user.getEmail())
@@ -20,27 +20,26 @@ public class UserMapper {
 			.marketingAgreed(user.getMarketingAgreed())
 			.active(user.getActive())
 			.version(user.getVersion())
+			.createdAt(user.getCreatedAt())
+			.modifiedAt(user.getModifiedAt())
 			.build();
-		entity.setCreatedAt(user.getCreatedAt());
-		entity.setModifiedAt(user.getModifiedAt());
-		return entity;
 	}
 
 	public User mapToDomain(UserEntity entity) {
-		return new User(
-			entity.getId(),
-			entity.getPassword(),
-			entity.getEmail(),
-			entity.getName(),
-			entity.getPhone(),
-			entity.getRole(),
-			entity.getTermsOfServiceAgreed(),
-			entity.getPrivacyPolicyAgreed(),
-			entity.getMarketingAgreed(),
-			entity.getActive(),
-			entity.getCreatedAt(),
-			entity.getModifiedAt(),
-			entity.getVersion()
-		);
+		return User.builder()
+			.id(entity.getId())
+			.password(entity.getPassword())
+			.email(entity.getEmail())
+			.name(entity.getName())
+			.phone(entity.getPhone())
+			.role(entity.getRole())
+			.termsOfServiceAgreed(entity.getTermsOfServiceAgreed())
+			.privacyPolicyAgreed(entity.getPrivacyPolicyAgreed())
+			.marketingAgreed(entity.getMarketingAgreed())
+			.active(entity.getActive())
+			.version(entity.getVersion())
+			.createdAt(entity.getCreatedAt())
+			.modifiedAt(entity.getModifiedAt())
+			.build();
 	}
 }
