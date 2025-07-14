@@ -31,6 +31,7 @@ import com.iroff.supportlab.application.user.dto.UpdateMarketingAgreedRequest;
 import com.iroff.supportlab.application.user.dto.UpdateNameRequest;
 import com.iroff.supportlab.application.user.dto.UpdatePasswordRequest;
 import com.iroff.supportlab.application.user.dto.UpdatePhoneNumberRequest;
+import com.iroff.supportlab.application.user.dto.VerifyPasswordRequest;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.port.in.ChangePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.CheckEmailExistsUseCase;
@@ -43,6 +44,7 @@ import com.iroff.supportlab.domain.user.port.in.UpdateMarketingAgreedUseCase;
 import com.iroff.supportlab.domain.user.port.in.UpdateNameUseCase;
 import com.iroff.supportlab.domain.user.port.in.UpdatePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.UpdatePhoneNumberUseCase;
+import com.iroff.supportlab.domain.user.port.in.VerifyPasswordUseCase;
 import com.iroff.supportlab.framework.config.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,6 +72,7 @@ public class UserController {
 	private final UpdatePhoneNumberUseCase updatePhoneNumberUseCase;
 	private final UpdateNameUseCase updateNameUseCase;
 	private final UpdateMarketingAgreedUseCase updateMarketingAgreedUseCase;
+	private final VerifyPasswordUseCase verifyPasswordUseCase;
 
 	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다. 휴대폰 인증이 완료된 상태여야 합니다.")
 	@PostMapping("/sign-up")
@@ -244,4 +247,20 @@ public class UserController {
 		}
 	}
 
+	@SecurityRequirement(name = "bearerAuth")
+	@Operation(summary = "비밀번호 검증", description = "사용자 정보 수정을 위해 현재 비밀번호를 검증합니다. 성공 시 10분간 정보 수정이 가능한 상태가 됩니다.")
+	@PostMapping("/me/verify-password")
+	public ResponseEntity<Void> verifyPassword(
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody VerifyPasswordRequest request
+	) {
+		try {
+			Long userId = user.getUser().getId();
+			verifyPasswordUseCase.verifyPassword(userId, request.password());
+			return ResponseEntity.ok().build();
+		} catch (DomainException e) {
+			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
+			throw new APIException(e, errorStatus);
+		}
+	}
 }

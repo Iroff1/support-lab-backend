@@ -24,6 +24,7 @@ public enum VerificationType {
 	FIND_EMAIL_VERIFIED("findEmailVerified"),
 	FIND_PASSWORD_VERIFIED("findPasswordVerified"),
 	UPDATE_PHONE_VERIFIED("updatePhoneVerified"),
+	USER_INFO_MODIFICATION_VERIFIED("userInfoModificationVerified"),
 	RESET_PASSWORD("resetPassword");
 
 	private final String value;
