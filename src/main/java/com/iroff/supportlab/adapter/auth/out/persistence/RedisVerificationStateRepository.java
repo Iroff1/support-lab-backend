@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RedisVerificationStateRepository implements VerificationStateRepository {
 
-	private static final String VERIFIED_VALUE = "true";
+	private static final String VERIFIED_VALUE = Boolean.TRUE.toString();
 	private static final String KEY_PREFIX = "verification-state:";
 	private final StringRedisTemplate redis;
 
