@@ -7,15 +7,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.iroff.supportlab.adapter.user.out.persistence.UserEntity;
+import com.iroff.supportlab.adapter.user.out.persistence.UserJpaRepository;
 import com.iroff.supportlab.domain.user.model.Role;
-import com.iroff.supportlab.domain.user.port.out.UserRepository;
 
 @Configuration
 @Profile("local")
 public class ApplicationInitializer {
 
 	@Bean
-	public CommandLineRunner loadTestData(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public CommandLineRunner loadTestData(UserJpaRepository userRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
 			if (userRepository.count() > 0) {
 				return;
