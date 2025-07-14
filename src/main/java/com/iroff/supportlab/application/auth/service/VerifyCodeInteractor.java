@@ -1,6 +1,9 @@
 package com.iroff.supportlab.application.auth.service;
 
 import java.time.Duration;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import org.springframework.stereotype.Service;
 
@@ -29,24 +32,24 @@ public class VerifyCodeInteractor implements VerifyCodeUseCase {
 		String phone = request.phone();
 		String code = request.code();
 
-		String savedCode;
+		Supplier<Optional<String>> findStrategy;
+		BiConsumer<VerificationType, String> removeStrategy;
+
 		if (userId == null) {
-			savedCode = codeRepository.find(type, phone)
-				.orElseThrow(() -> new DomainException(AuthError.CODE_NOT_EXISTS));
-
-			if (!savedCode.equals(code)) {
-				throw new DomainException(AuthError.VERIFY_CODE_FAILED);
-			}
-			codeRepository.remove(type, phone);
+			findStrategy = () -> codeRepository.find(type, phone);
+			removeStrategy = codeRepository::remove;
 		} else {
-			savedCode = codeRepository.findByUser(type, phone, userId)
-				.orElseThrow(() -> new DomainException(AuthError.CODE_NOT_EXISTS));
-
-			if (!savedCode.equals(code)) {
-				throw new DomainException(AuthError.VERIFY_CODE_FAILED);
-			}
-			codeRepository.removeByUser(type, phone, userId);
+			findStrategy = () -> codeRepository.findByUser(type, phone, userId);
+			removeStrategy = (t, p) -> codeRepository.removeByUser(t, p, userId);
 		}
+
+		String savedCode = findStrategy.get()
+			.orElseThrow(() -> new DomainException(AuthError.CODE_NOT_EXISTS));
+
+		if (!savedCode.equals(code)) {
+			throw new DomainException(AuthError.VERIFY_CODE_FAILED);
+		}
+		removeStrategy.accept(type, phone);
 
 		VerificationType verifiedType = switch (type) {
 			case SIGN_UP_CODE -> VerificationType.SIGN_UP_VERIFIED;
