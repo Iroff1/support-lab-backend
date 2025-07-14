@@ -25,7 +25,6 @@ import com.iroff.supportlab.domain.auth.port.in.VerifyCodeEmailUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeUseCase;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.framework.config.security.CustomUserDetails;
-import com.iroff.supportlab.framework.config.security.JwtTokenProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,7 +37,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
-	private final JwtTokenProvider jwtTokenProvider;
 	private final SendCodeUseCase sendCodeUseCase;
 	private final VerifyCodeUseCase verifyCodeUseCase;
 	private final SendCodeEmailUseCase sendCodeEmailUseCase;
