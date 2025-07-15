@@ -33,13 +33,13 @@ public class UpdateMarketingAgreedInteractor implements UpdateMarketingAgreedUse
 
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new DomainException(UserError.USER_NOT_FOUND));
-		
+
 		boolean marketingAgreed = request.marketingAgreed();
 		user.changeMarketingAgreed(marketingAgreed);
 		userRepository.save(user);
 	}
 
-	void checkCondition(boolean condition, ErrorInfo error) {
+	private void checkCondition(boolean condition, ErrorInfo error) {
 		if (!condition) {
 			throw new DomainException(error);
 		}

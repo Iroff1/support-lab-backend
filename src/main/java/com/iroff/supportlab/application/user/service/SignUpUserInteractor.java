@@ -10,6 +10,7 @@ import com.iroff.supportlab.application.user.dto.SignUpUserResponse;
 import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
 import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
+import com.iroff.supportlab.domain.common.port.in.exception.ErrorInfo;
 import com.iroff.supportlab.domain.user.model.Role;
 import com.iroff.supportlab.domain.user.model.User;
 import com.iroff.supportlab.domain.user.port.in.SignUpUserUseCase;
@@ -26,12 +27,6 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final VerificationStateRepository verificationStateRepository;
-
-	private void checkCondition(boolean condition, UserError error) {
-		if (!condition) {
-			throw new DomainException(error);
-		}
-	}
 
 	@Transactional
 	@Override
@@ -86,4 +81,9 @@ public class SignUpUserInteractor implements SignUpUserUseCase {
 		return true;
 	}
 
+	private void checkCondition(boolean condition, ErrorInfo error) {
+		if (!condition) {
+			throw new DomainException(error);
+		}
+	}
 }

@@ -41,7 +41,7 @@ public class VerifyPasswordInteractor implements VerifyPasswordUseCase {
 		);
 	}
 
-	void checkCondition(boolean condition, ErrorInfo error) {
+	private void checkCondition(boolean condition, ErrorInfo error) {
 		if (!condition) {
 			throw new DomainException(error);
 		}

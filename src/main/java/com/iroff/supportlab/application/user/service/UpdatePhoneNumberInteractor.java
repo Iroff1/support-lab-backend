@@ -41,7 +41,7 @@ public class UpdatePhoneNumberInteractor implements UpdatePhoneNumberUseCase {
 		userRepository.save(user);
 	}
 
-	void checkCondition(boolean condition, ErrorInfo error) {
+	private void checkCondition(boolean condition, ErrorInfo error) {
 		if (!condition) {
 			throw new DomainException(error);
 		}

@@ -39,7 +39,7 @@ public class UpdatePasswordInteractor implements UpdatePasswordUseCase {
 		userRepository.save(user);
 	}
 
-	void checkCondition(boolean condition, ErrorInfo error) {
+	private void checkCondition(boolean condition, ErrorInfo error) {
 		if (!condition) {
 			throw new DomainException(error);
 		}

@@ -43,7 +43,7 @@ public class DeleteUserInteractor implements DeleteUserUseCase {
 		}
 	}
 
-	void checkCondition(boolean condition, ErrorInfo error) {
+	private void checkCondition(boolean condition, ErrorInfo error) {
 		if (!condition) {
 			throw new DomainException(error);
 		}
