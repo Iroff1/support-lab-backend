@@ -50,6 +50,9 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
 
 web:
-  host:
-    dev: ${WEB_HOST_DEV}
-    prod: ${WEB_HOST_PROD}
+  hosts:
+    - http://localhost:8001
+    - http://localhost:3000
+    - ${WEB_HOST_1}
+    - ${WEB_HOST_2}
+    - ${WEB_HOST_3}
