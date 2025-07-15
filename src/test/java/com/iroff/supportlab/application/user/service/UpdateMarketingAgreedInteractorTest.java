@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.iroff.supportlab.application.user.dto.UpdateMarketingAgreedRequest;
+import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
+import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
+import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.model.User;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
@@ -27,6 +30,9 @@ class UpdateMarketingAgreedInteractorTest {
 	private UserRepository userRepository;
 
 	@Mock
+	private VerificationStateRepository stateRepository;
+
+	@Mock
 	private User mockUser;
 
 	@InjectMocks
@@ -38,6 +44,8 @@ class UpdateMarketingAgreedInteractorTest {
 		// given
 		UpdateMarketingAgreedRequest request = new UpdateMarketingAgreedRequest(true);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		doNothing().when(mockUser).changeMarketingAgreed(true);
 
 		// when
@@ -54,6 +62,8 @@ class UpdateMarketingAgreedInteractorTest {
 		// given
 		UpdateMarketingAgreedRequest request = new UpdateMarketingAgreedRequest(false);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		doNothing().when(mockUser).changeMarketingAgreed(false);
 
 		// when
@@ -70,6 +80,8 @@ class UpdateMarketingAgreedInteractorTest {
 		// given
 		UpdateMarketingAgreedRequest request = new UpdateMarketingAgreedRequest(true);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 
 		// when & then
 		DomainException exception = assertThrows(DomainException.class,
@@ -78,5 +90,24 @@ class UpdateMarketingAgreedInteractorTest {
 		assertEquals(UserError.USER_NOT_FOUND, exception.getError());
 		verify(userRepository).findById(USER_ID);
 		verifyNoInteractions(mockUser);
+	}
+
+	@Test
+	@DisplayName("비밀번호 인증을 하지 않은 상태로 업데이트 시도 테스트")
+	void updateMarketingAgreed_UpdateWithNoVerifyingPassword() {
+		// given
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(false);
+
+		// when & then
+		DomainException exception = assertThrows(DomainException.class,
+			() -> updateMarketingAgreedInteractor.updateMarketingAgreed(USER_ID,
+				new UpdateMarketingAgreedRequest(true)));
+
+		assertEquals(AuthError.INVALID_AUTHORIZATION, exception.getError());
+		verifyNoInteractions(mockUser);
+		verify(userRepository, never()).findById(USER_ID);
+		verify(mockUser, never()).changeMarketingAgreed(anyBoolean());
+		verify(userRepository, never()).save(mockUser);
 	}
 }

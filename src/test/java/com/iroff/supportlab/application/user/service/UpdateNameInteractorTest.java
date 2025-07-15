@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.iroff.supportlab.application.user.dto.UpdateNameRequest;
+import com.iroff.supportlab.domain.auth.model.vo.VerificationType;
+import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
+import com.iroff.supportlab.domain.auth.port.out.VerificationStateRepository;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.user.model.User;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
@@ -27,6 +30,8 @@ class UpdateNameInteractorTest {
 	@Mock
 	private UserRepository userRepository;
 	@Mock
+	private VerificationStateRepository stateRepository;
+	@Mock
 	private User mockUser;
 	@InjectMocks
 	private UpdateNameInteractor updateNameInteractor;
@@ -37,6 +42,8 @@ class UpdateNameInteractorTest {
 		// given
 		UpdateNameRequest request = new UpdateNameRequest(VALID_NAME);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		when(mockUser.getName()).thenReturn(CURRENT_NAME);
 		doNothing().when(mockUser).changeName(VALID_NAME);
 
@@ -54,6 +61,8 @@ class UpdateNameInteractorTest {
 		// given
 		UpdateNameRequest request = new UpdateNameRequest(VALID_NAME);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.empty());
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 
 		// when & then
 		DomainException exception = assertThrows(DomainException.class,
@@ -71,6 +80,8 @@ class UpdateNameInteractorTest {
 		String sameName = CURRENT_NAME;
 		UpdateNameRequest request = new UpdateNameRequest(sameName);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		when(mockUser.getName()).thenReturn(CURRENT_NAME);
 
 		// when & then
@@ -89,6 +100,8 @@ class UpdateNameInteractorTest {
 		String singleCharName = "홍";
 		UpdateNameRequest request = new UpdateNameRequest(singleCharName);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		when(mockUser.getName()).thenReturn(CURRENT_NAME);
 
 		// when & then
@@ -107,6 +120,8 @@ class UpdateNameInteractorTest {
 		String longName = "홍길동일이삼사";  // 7글자
 		UpdateNameRequest request = new UpdateNameRequest(longName);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		when(mockUser.getName()).thenReturn(CURRENT_NAME);
 
 		// when & then
@@ -125,6 +140,8 @@ class UpdateNameInteractorTest {
 		String englishName = "Hong";
 		UpdateNameRequest request = new UpdateNameRequest(englishName);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		when(mockUser.getName()).thenReturn(CURRENT_NAME);
 
 		// when & then
@@ -143,6 +160,8 @@ class UpdateNameInteractorTest {
 		String nameWithSpecialChar = "홍길★동";
 		UpdateNameRequest request = new UpdateNameRequest(nameWithSpecialChar);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		when(mockUser.getName()).thenReturn(CURRENT_NAME);
 
 		// when & then
@@ -161,6 +180,8 @@ class UpdateNameInteractorTest {
 		String emptyName = "";
 		UpdateNameRequest request = new UpdateNameRequest(emptyName);
 		when(userRepository.findById(USER_ID)).thenReturn(Optional.of(mockUser));
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(true);
 		when(mockUser.getName()).thenReturn(CURRENT_NAME);
 
 		// when & then
@@ -170,5 +191,23 @@ class UpdateNameInteractorTest {
 		assertEquals(UserError.INVALID_NAME, exception.getError());
 		verify(userRepository).findById(USER_ID);
 		verify(mockUser, never()).changeName(emptyName);
+	}
+
+	@Test
+	@DisplayName("비밀번호 인증을 하지 않은 상태로 업데이트 시도 테스트")
+	void updateName_UpdateWithNoVerifyingPassword() {
+		// given
+		when(stateRepository.isVerifiedByUser(VerificationType.USER_INFO_MODIFICATION_VERIFIED, USER_ID.toString(),
+			USER_ID)).thenReturn(false);
+
+		// when & then
+		DomainException exception = assertThrows(DomainException.class,
+			() -> updateNameInteractor.updateName(USER_ID, new UpdateNameRequest(VALID_NAME)));
+
+		assertEquals(AuthError.INVALID_AUTHORIZATION, exception.getError());
+		verifyNoInteractions(mockUser);
+		verify(userRepository, never()).findById(USER_ID);
+		verify(mockUser, never()).changeName(VALID_NAME);
+		verify(userRepository, never()).save(mockUser);
 	}
 }
