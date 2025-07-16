@@ -36,9 +36,9 @@ public class UpdatePhoneNumberInteractor implements UpdatePhoneNumberUseCase {
 		checkCondition(!user.getPhone().equals(newPhone), UserError.SAME_PHONE_NUMBER_NOT_ALLOWED);
 		checkCondition(!userRepository.existsByPhone(newPhone), UserError.PHONE_ALREADY_EXISTS);
 
-		verificationStateRepository.remove(VerificationType.UPDATE_PHONE_VERIFIED, newPhone);
 		user.changePhone(newPhone);
 		userRepository.save(user);
+		verificationStateRepository.remove(VerificationType.UPDATE_PHONE_VERIFIED, newPhone);
 	}
 
 	private void checkCondition(boolean condition, ErrorInfo error) {
