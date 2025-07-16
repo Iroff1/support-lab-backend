@@ -2,28 +2,43 @@ package com.iroff.supportlab.domain.user.model;
 
 import com.iroff.supportlab.domain.common.model.BaseTime;
 
-public interface User extends BaseTime {
-	Long getId();
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
-	String getPassword();
+@Getter
+@SuperBuilder
+@AllArgsConstructor
+public class User extends BaseTime {
+	private Long id;
+	private String password;
+	private String email;
+	private String name;
+	private String phone;
+	private Role role;
+	private Boolean termsOfServiceAgreed;
+	private Boolean privacyPolicyAgreed;
+	private Boolean marketingAgreed;
+	private Boolean active;
+	private Long version;
 
-	String getEmail();
+	public void changeName(String name) {
+		this.name = name;
+	}
 
-	String getName();
+	public void changePassword(String password) {
+		this.password = password;
+	}
 
-	String getPhone();
+	public void changePhone(String phone) {
+		this.phone = phone;
+	}
 
-	Role getRole();
+	public void changeMarketingAgreed(Boolean agreed) {
+		this.marketingAgreed = agreed;
+	}
 
-	Boolean getTermsOfServiceAgreed();
-
-	Boolean getPrivacyPolicyAgreed();
-
-	Boolean getMarketingAgreed();
-
-	Boolean getActive();
-
-	void changePassword(String password);
-
-	void changeActive(Boolean active);
+	public void changeActive(Boolean active) {
+		this.active = active;
+	}
 }

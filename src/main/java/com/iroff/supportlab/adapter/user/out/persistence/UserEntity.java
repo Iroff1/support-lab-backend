@@ -2,7 +2,6 @@ package com.iroff.supportlab.adapter.user.out.persistence;
 
 import com.iroff.supportlab.adapter.common.out.persistence.BaseTimeEntity;
 import com.iroff.supportlab.domain.user.model.Role;
-import com.iroff.supportlab.domain.user.model.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,15 +14,15 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(
 	name = "users",
 	uniqueConstraints = {
@@ -31,7 +30,7 @@ import lombok.NoArgsConstructor;
 		@UniqueConstraint(name = "uk_user_phone", columnNames = "phone")
 	}
 )
-public class UserEntity extends BaseTimeEntity implements User {
+public class UserEntity extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -66,14 +65,4 @@ public class UserEntity extends BaseTimeEntity implements User {
 
 	@Version
 	private Long version;
-
-	@Override
-	public void changePassword(String password) {
-		this.password = password;
-	}
-
-	@Override
-	public void changeActive(Boolean active) {
-		this.active = active;
-	}
 }

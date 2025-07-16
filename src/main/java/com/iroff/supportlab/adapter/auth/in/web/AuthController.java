@@ -2,6 +2,7 @@ package com.iroff.supportlab.adapter.auth.in.web;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import com.iroff.supportlab.domain.auth.port.in.SendCodeUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeEmailUseCase;
 import com.iroff.supportlab.domain.auth.port.in.VerifyCodeUseCase;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
+import com.iroff.supportlab.framework.config.security.CustomUserDetails;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,6 +47,7 @@ public class AuthController {
 	@Operation(summary = "휴대폰 번호 인증 코드 발송", description = "휴대폰 번호 인증 코드를 발송합니다. 회원가입, 이메일 찾기, 비밀번호 찾기에 사용됩니다.")
 	@PostMapping("/send-code")
 	public ResponseEntity<Void> sendCode(
+		@AuthenticationPrincipal CustomUserDetails user,
 		@Valid @RequestBody SendCodeRequest request,
 		HttpServletRequest servletRequest
 	) {
@@ -55,8 +58,12 @@ public class AuthController {
 		} else {
 			ip = servletRequest.getRemoteAddr();
 		}
+		Long userId = null;
+		if (user != null && user.getUser() != null && user.getUser().getId() != null) {
+			userId = user.getUser().getId();
+		}
 		try {
-			sendCodeUseCase.sendCode(request, ip);
+			sendCodeUseCase.sendCode(request, ip, userId);
 			return ResponseEntity.ok().build();
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
@@ -67,10 +74,16 @@ public class AuthController {
 	@Operation(summary = "휴대폰 번호 인증 코드 검증", description = "휴대폰으로 발송된 인증 코드를 검증합니다.")
 	@PostMapping("/verify-code")
 	public ResponseEntity<VerifyCodeResponse> verifyCode(
-		@Valid @RequestBody VerifyCodeRequest request
+		@AuthenticationPrincipal CustomUserDetails user,
+		@Valid @RequestBody VerifyCodeRequest request,
+		HttpServletRequest servletRequest
 	) {
+		Long userId = null;
+		if (user != null && user.getUser() != null && user.getUser().getId() != null) {
+			userId = user.getUser().getId();
+		}
 		try {
-			VerifyCodeResponse response = verifyCodeUseCase.verifyCode(request);
+			VerifyCodeResponse response = verifyCodeUseCase.verifyCode(request, userId);
 			return ResponseEntity.ok().body(response);
 		} catch (DomainException e) {
 			ErrorStatus errorStatus = errorStatusResolver.resolve(e.getError());
@@ -116,7 +129,9 @@ public class AuthController {
 
 	@Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인합니다. 성공 시 JWT 토큰이 발급됩니다.")
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+	public ResponseEntity<LoginResponse> login(
+		@RequestBody LoginRequest request
+	) {
 		try {
 			LoginResponse response = loginUseCase.login(request);
 			return ResponseEntity.ok()

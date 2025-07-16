@@ -1,46 +1,42 @@
 package com.iroff.supportlab.application.user.service;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.iroff.supportlab.application.user.dto.DeleteUserRequest;
-import com.iroff.supportlab.domain.auth.port.in.exception.AuthError;
+import com.iroff.supportlab.application.user.dto.UpdatePasswordRequest;
 import com.iroff.supportlab.domain.common.port.in.exception.DomainException;
 import com.iroff.supportlab.domain.common.port.in.exception.ErrorInfo;
 import com.iroff.supportlab.domain.user.model.User;
-import com.iroff.supportlab.domain.user.port.in.DeleteUserUseCase;
+import com.iroff.supportlab.domain.user.port.in.UpdatePasswordUseCase;
 import com.iroff.supportlab.domain.user.port.in.exception.UserError;
 import com.iroff.supportlab.domain.user.port.out.UserRepository;
+import com.iroff.supportlab.domain.user.util.PasswordValidator;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
-public class DeleteUserInteractor implements DeleteUserUseCase {
+public class UpdatePasswordInteractor implements UpdatePasswordUseCase {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
 	@Override
-	public void deleteUser(Long userId, DeleteUserRequest request) {
-		String password = request.password();
+	public void updatePassword(Long userId, UpdatePasswordRequest request) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new DomainException(UserError.USER_NOT_FOUND));
-		checkCondition(passwordEncoder.matches(password, user.getPassword()), AuthError.INVALID_PASSWORD);
-		try {
-			if (userRepository.existsById(userId)) {
-				userRepository.deleteById(userId);
-			} else {
-				throw new DomainException(UserError.USER_NOT_FOUND);
-			}
-		} catch (DataAccessException e) {
-			throw new DomainException(UserError.DELETE_USER_FAILED);
-		}
+
+		String oldPassword = request.oldPassword();
+		String newPassword = request.newPassword();
+
+		checkCondition(!newPassword.equals(oldPassword), UserError.SAME_PASSWORD_NOT_ALLOWED);
+		checkCondition(passwordEncoder.matches(oldPassword, user.getPassword()), UserError.WRONG_PASSWORD);
+		PasswordValidator.validatePassword(newPassword);
+
+		user.changePassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
 	}
 
 	private void checkCondition(boolean condition, ErrorInfo error) {

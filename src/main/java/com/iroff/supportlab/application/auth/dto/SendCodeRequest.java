@@ -9,8 +9,8 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "인증 코드 발송 요청 DTO")
 public record SendCodeRequest(
-	@Schema(description = "인증 타입 (SIGN_UP_CODE: 회원가입, FIND_EMAIL_CODE: 이메일 찾기, FIND_PASSWORD_CODE: 비밀번호 찾기)", example = "SIGN_UP_CODE", allowableValues = {
-		"SIGN_UP_CODE", "FIND_EMAIL_CODE", "FIND_PASSWORD_CODE"})
+	@Schema(description = "인증 타입 (SIGN_UP_CODE: 회원가입, FIND_EMAIL_CODE: 이메일 찾기, FIND_PASSWORD_CODE: 비밀번호 찾기, UPDATE_PHONE_CODE: 전화번호 수정)", example = "SIGN_UP_CODE", allowableValues = {
+		"SIGN_UP_CODE", "FIND_EMAIL_CODE", "FIND_PASSWORD_CODE", "UPDATE_PHONE_CODE"})
 	@NotNull(message = "검증 타입은 필수입니다.")
 	VerificationType type,
 
