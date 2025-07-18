@@ -36,6 +36,7 @@ public class Payment extends BaseTime {
 	private Boolean cultureExpense;
 	private Integer taxFreeAmount;
 	private Integer taxExemptionAmount;
+	private Long userId; // userId 필드 추가
 
 	private Card card;
 	private VirtualAccount virtualAccount;
