@@ -55,4 +55,10 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
-
+web:
+  hosts:
+    - http://localhost:8001
+    - http://localhost:3000
+    - ${WEB_HOST_1}
+    - ${WEB_HOST_2}
+    - ${WEB_HOST_3}

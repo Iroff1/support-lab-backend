@@ -22,6 +22,7 @@ public class SecurityConfig {
 
 	private final JwtTokenProvider jwtTokenProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final JwtBlacklistFilter jwtBlacklistFilter;
 	private final CustomUserDetailsService customUserDetailsService;
 	private final Environment env;
 
@@ -51,8 +52,8 @@ public class SecurityConfig {
 			);
 
 		http
-			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService),
-				UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtBlacklistFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
 
 		// todo: h2-console 사용을 위한 코드, 배포시 삭제
 		if (Arrays.asList(env.getActiveProfiles()).contains("local")) {

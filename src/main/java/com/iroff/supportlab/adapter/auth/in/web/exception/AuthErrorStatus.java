@@ -24,6 +24,7 @@ public class AuthErrorStatus implements ErrorStatus {
 		errorMap.put(AuthError.TOKEN_EXPIRED.getCode(), HttpStatus.FORBIDDEN);
 		errorMap.put(AuthError.INVALID_REQUEST.getCode(), HttpStatus.BAD_REQUEST);
 		errorMap.put(AuthError.INVALID_PASSWORD.getCode(), HttpStatus.BAD_REQUEST);
+		errorMap.put(AuthError.LOGOUT_FAILED.getCode(), HttpStatus.BAD_REQUEST);
 	}
 
 	@Override
