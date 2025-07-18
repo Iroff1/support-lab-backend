@@ -3,7 +3,16 @@ package com.iroff.supportlab.domain.payment.model;
 import java.time.OffsetDateTime;
 
 import com.iroff.supportlab.domain.common.model.BaseTime;
-import com.iroff.supportlab.domain.payment.model.paymentinfo.*;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.Card;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.CashReceipt;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.Discount;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.EasyPay;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.Failure;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.GiftCertificate;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.MobilePhone;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.Receipt;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.Transfer;
+import com.iroff.supportlab.domain.payment.model.paymentinfo.VirtualAccount;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,34 +57,4 @@ public class Payment extends BaseTime {
 	private Failure failure;
 	private CashReceipt cashReceipt;
 	private Discount discount;
-
-	public void updatePayment(Payment confirmedPayment) {
-		this.version = confirmedPayment.getVersion();
-		this.paymentKey = confirmedPayment.getPaymentKey();
-		this.type = confirmedPayment.getType();
-		this.mid = confirmedPayment.getMid();
-		this.currency = confirmedPayment.getCurrency();
-		this.method = confirmedPayment.getMethod();
-		this.balanceAmount = confirmedPayment.getBalanceAmount();
-		this.status = confirmedPayment.getStatus();
-		this.requestedAt = confirmedPayment.getRequestedAt();
-		this.approvedAt = confirmedPayment.getApprovedAt();
-		this.useEscrow = confirmedPayment.getUseEscrow();
-		this.lastTransactionKey = confirmedPayment.getLastTransactionKey();
-		this.suppliedAmount = confirmedPayment.getSuppliedAmount();
-		this.vat = confirmedPayment.getVat();
-		this.cultureExpense = confirmedPayment.getCultureExpense();
-		this.taxFreeAmount = confirmedPayment.getTaxFreeAmount();
-		this.taxExemptionAmount = confirmedPayment.getTaxExemptionAmount();
-		this.card = confirmedPayment.getCard();
-		this.virtualAccount = confirmedPayment.getVirtualAccount();
-		this.mobilePhone = confirmedPayment.getMobilePhone();
-		this.giftCertificate = confirmedPayment.getGiftCertificate();
-		this.transfer = confirmedPayment.getTransfer();
-		this.receipt = confirmedPayment.getReceipt();
-		this.easyPay = confirmedPayment.getEasyPay();
-		this.failure = confirmedPayment.getFailure();
-		this.cashReceipt = confirmedPayment.getCashReceipt();
-		this.discount = confirmedPayment.getDiscount();
-	}
 }
